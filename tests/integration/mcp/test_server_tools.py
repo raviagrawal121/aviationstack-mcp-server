@@ -17,6 +17,8 @@ async def test_registered_tools() -> None:
         "get_flight_schedule",
         "search_airports",
         "search_airlines",
+        "list_aircraft_types",
+        "list_airplanes",
     }
 
     assert expected_tools.issubset(tool_names)
