@@ -23,6 +23,21 @@ from .location import City, CityResponse, Country, CountryResponse
 from .route import Route, RouteResponse
 from .tax import Tax, TaxResponse
 
+from .queries import (
+    AirlineSearchQuery,
+    AirportScheduleQuery,
+    AirportSearchQuery,
+    FlightSearchQuery,
+    FutureScheduleQuery,
+    HistoricalFlightQuery,
+    PaginationQuery,
+    QueryModel,
+    RecordLimitQuery,
+    RouteSearchQuery,
+    ScheduleType,
+    TaxSearchQuery,
+)
+
 __all__ = [
     "AircraftType",
     "AircraftTypeResponse",
@@ -52,4 +67,16 @@ __all__ = [
     "ScheduleTimeReference",
     "Tax",
     "TaxResponse",
+    "AirlineSearchQuery",
+    "AirportScheduleQuery",
+    "AirportSearchQuery",
+    "FlightSearchQuery",
+    "FutureScheduleQuery",
+    "HistoricalFlightQuery",
+    "PaginationQuery",
+    "QueryModel",
+    "RecordLimitQuery",
+    "RouteSearchQuery",
+    "ScheduleType",
+    "TaxSearchQuery",
 ]
