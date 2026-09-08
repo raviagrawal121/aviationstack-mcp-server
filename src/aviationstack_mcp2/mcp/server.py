@@ -12,6 +12,9 @@ from aviationstack_mcp2.mcp.tools.airports import register_airport_tools
 from aviationstack_mcp2.mcp.tools.flights import register_flight_tools
 from aviationstack_mcp2.mcp.tools.reference import register_reference_tools
 
+from aviationstack_mcp2.mcp.prompts.aviation import (
+    register_aviation_prompts,
+)
 
 @asynccontextmanager
 async def app_lifespan(
@@ -44,5 +47,7 @@ def create_server() -> MCPServer[AppContext]:
     register_airline_tools(server)
     register_aircraft_tools(server)
     register_reference_tools(server)
+
+    register_aviation_prompts(server)
 
     return server
