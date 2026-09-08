@@ -8,7 +8,7 @@ from aviationstack_mcp2.config import get_settings
 from aviationstack_mcp2.mcp.dependencies import AppContext, build_app_context
 from aviationstack_mcp2.mcp.tools.flights import register_flight_tools
 from aviationstack_mcp2.mcp.tools.airports import register_airport_tools
-
+from aviationstack_mcp2.mcp.tools.airlines import register_airline_tools
 
 
 @asynccontextmanager
@@ -39,5 +39,6 @@ def create_server() -> MCPServer[AppContext]:
 
     register_flight_tools(server)
     register_airport_tools(server)
+    register_airline_tools(server)
 
     return server
