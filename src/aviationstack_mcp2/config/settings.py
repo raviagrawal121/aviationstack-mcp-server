@@ -14,26 +14,52 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    # Application
     app_name: str = "aviationstack-mcp2"
     environment: str = Field(default="development")
     log_level: str = Field(default="INFO")
 
-    # Aviationstack
     aviationstack_api_key: str = Field(
         ...,
         min_length=1,
     )
+
     aviationstack_base_url: str = Field(
-        default="http://api.aviationstack.com/v1",
+        default="https://api.aviationstack.com/v1",
     )
-    aviationstack_timeout: float = Field(
+
+    aviationstack_connect_timeout: float = Field(
+        default=5.0,
+        gt=0,
+    )
+
+    aviationstack_read_timeout: float = Field(
         default=30.0,
         gt=0,
+    )
+
+    aviationstack_write_timeout: float = Field(
+        default=30.0,
+        gt=0,
+    )
+
+    aviationstack_pool_timeout: float = Field(
+        default=5.0,
+        gt=0,
+    )
+
+    aviationstack_max_retries: int = Field(
+        default=3,
+        ge=0,
+        le=10,
+    )
+
+    aviationstack_retry_backoff: float = Field(
+        default=0.5,
+        ge=0,
     )
 
 
 @lru_cache
 def get_settings() -> Settings:
-    """Return a cached application settings instance."""
+    """Return the cached application settings."""
     return Settings()
