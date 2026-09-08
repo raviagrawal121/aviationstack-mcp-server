@@ -50,6 +50,10 @@ class AviationstackClient:
 
         return payload
 
+    async def close(self) -> None:
+        await self._http_client.close()
+
+
     def _build_url(self, endpoint: str) -> str:
         """Build an endpoint URL safely."""
 
@@ -57,6 +61,8 @@ class AviationstackClient:
         normalized_endpoint = endpoint.strip("/")
 
         return f"{normalized_base_url}/{normalized_endpoint}"
+
+    
 
     @staticmethod
     def _parse_response(response: Any) -> dict[str, Any]:
