@@ -1,0 +1,42 @@
+[project]
+name = "aviationstack-mcp2"
+version = "2.0.0"
+description = "A production-ready Model Context Protocol (MCP) server that integrates with the Aviationstack API to deliver real-time flight tracking, airport schedules, future routes, and aircraft data."
+readme = "README.md"
+authors = [
+    { name = "Ravi Agarwal", email = "raviagrawal1121@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "httpx>=0.28.1",
+    "mcp[cli]>=2.2.0",
+    "pydantic>=2.13.5",
+    "pydantic-settings>=2.15.0",
+]
+
+[project.scripts]
+aviationstack-mcp2 = "aviationstack_mcp2:main"
+
+[build-system]
+requires = ["uv_build>=0.12.10,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "mypy>=2.3.1",
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+    "ruff>=0.16.6",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
