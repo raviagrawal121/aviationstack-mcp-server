@@ -1,12 +1,12 @@
 import pytest
 
-from aviationstack_mcp2.config.settings import Environment
-from aviationstack_mcp2.errors import (
+from aviationstack_mcp_server.config.settings import Environment
+from aviationstack_mcp_server.errors import (
     AviationstackAuthenticationError,
     AviationstackConfigurationError,
 )
-from aviationstack_mcp2.mcp.errors import translate_aviationstack_error
-from aviationstack_mcp2.security import (
+from aviationstack_mcp_server.mcp.errors import translate_aviationstack_error
+from aviationstack_mcp_server.security import (
     redact_mapping,
     validate_api_base_url,
     validate_endpoint,

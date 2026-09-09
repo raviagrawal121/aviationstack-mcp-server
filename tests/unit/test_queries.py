@@ -3,7 +3,7 @@ from datetime import date
 import pytest
 from pydantic import ValidationError
 
-from aviationstack_mcp2.models import (
+from aviationstack_mcp_server.models import (
     AirportScheduleQuery,
     FlightSearchQuery,
     HistoricalFlightQuery,

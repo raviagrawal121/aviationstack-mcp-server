@@ -3,8 +3,8 @@ import logging
 
 import pytest
 
-from aviationstack_mcp2.errors import AviationstackServerError
-from aviationstack_mcp2.mcp.errors import mcp_error_boundary
+from aviationstack_mcp_server.errors import AviationstackServerError
+from aviationstack_mcp_server.mcp.errors import mcp_error_boundary
 
 
 @pytest.mark.asyncio

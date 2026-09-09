@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 import pytest_asyncio
 from mcp import Client
 
-from aviationstack_mcp2.mcp.server import create_server
+from aviationstack_mcp_server.mcp.server import create_server
 
 
 @asynccontextmanager
@@ -31,7 +31,7 @@ async def mcp_client() -> AsyncIterator[Client]:
 # import pytest_asyncio
 # from mcp import Client
 
-# from aviationstack_mcp2.mcp.server import create_server
+# from aviationstack_mcp_server.mcp.server import create_server
 
 
 # # @pytest_asyncio.fixture

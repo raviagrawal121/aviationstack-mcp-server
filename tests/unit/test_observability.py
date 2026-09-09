@@ -2,9 +2,9 @@ import logging
 
 import pytest
 
-from aviationstack_mcp2.logging_config import CorrelationIdFilter
-from aviationstack_mcp2.mcp.errors import mcp_error_boundary
-from aviationstack_mcp2.observability import (
+from aviationstack_mcp_server.logging_config import CorrelationIdFilter
+from aviationstack_mcp_server.mcp.errors import mcp_error_boundary
+from aviationstack_mcp_server.observability import (
     generate_correlation_id,
     get_correlation_id,
     set_correlation_id,
@@ -60,7 +60,7 @@ async def test_tool_boundary_logs_one_correlation_id() -> None:
 
     handler = RecordHandler()
     handler.addFilter(CorrelationIdFilter())
-    tool_logger = logging.getLogger("aviationstack_mcp2.mcp.errors")
+    tool_logger = logging.getLogger("aviationstack_mcp_server.mcp.errors")
     tool_logger.addHandler(handler)
     tool_logger.setLevel(logging.INFO)
 

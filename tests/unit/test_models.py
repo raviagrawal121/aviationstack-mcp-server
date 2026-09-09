@@ -1,4 +1,4 @@
-from aviationstack_mcp2.models import (
+from aviationstack_mcp_server.models import (
     Airport,
     Flight,
     ScheduleFlight,

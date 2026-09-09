@@ -1,9 +1,9 @@
 import httpx
 import pytest
 
-from aviationstack_mcp2.client.aviationstack import AviationstackClient
-from aviationstack_mcp2.client.http import HTTPClient
-from aviationstack_mcp2.errors import (
+from aviationstack_mcp_server.client.aviationstack import AviationstackClient
+from aviationstack_mcp_server.client.http import HTTPClient
+from aviationstack_mcp_server.errors import (
     AviationstackAPIError,
     AviationstackAuthenticationError,
     AviationstackAuthorizationError,

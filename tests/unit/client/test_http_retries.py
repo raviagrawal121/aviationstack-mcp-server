@@ -3,9 +3,9 @@ from unittest.mock import AsyncMock
 import httpx
 import pytest
 
-from aviationstack_mcp2.client.http import HTTPClient
-from aviationstack_mcp2.config import Settings
-from aviationstack_mcp2.errors import (
+from aviationstack_mcp_server.client.http import HTTPClient
+from aviationstack_mcp_server.config import Settings
+from aviationstack_mcp_server.errors import (
     AviationstackAuthenticationError,
     AviationstackRequestError,
     AviationstackServerError,
@@ -37,8 +37,8 @@ async def test_retryable_status_is_retried(
     request = AsyncMock(side_effect=[httpx.Response(status_code), httpx.Response(200)])
     sleep = AsyncMock()
     monkeypatch.setattr(client._client, "request", request)
-    monkeypatch.setattr("aviationstack_mcp2.client.http.asyncio.sleep", sleep)
-    monkeypatch.setattr("aviationstack_mcp2.client.http.random.uniform", lambda *_: 0)
+    monkeypatch.setattr("aviationstack_mcp_server.client.http.asyncio.sleep", sleep)
+    monkeypatch.setattr("aviationstack_mcp_server.client.http.random.uniform", lambda *_: 0)
 
     response = await client.request("GET", "https://example.com/flights")
 
@@ -103,8 +103,8 @@ async def test_retry_attempts_are_total_attempts(
     request = AsyncMock(side_effect=[httpx.Response(503), httpx.Response(503), httpx.Response(503)])
     sleep = AsyncMock()
     monkeypatch.setattr(client._client, "request", request)
-    monkeypatch.setattr("aviationstack_mcp2.client.http.asyncio.sleep", sleep)
-    monkeypatch.setattr("aviationstack_mcp2.client.http.random.uniform", lambda *_: 0)
+    monkeypatch.setattr("aviationstack_mcp_server.client.http.asyncio.sleep", sleep)
+    monkeypatch.setattr("aviationstack_mcp_server.client.http.random.uniform", lambda *_: 0)
 
     with pytest.raises(AviationstackServerError):
         await client.request("GET", "https://example.com/flights")
@@ -124,7 +124,7 @@ async def test_retry_after_is_capped(monkeypatch: pytest.MonkeyPatch) -> None:
     )
     sleep = AsyncMock()
     monkeypatch.setattr(client._client, "request", request)
-    monkeypatch.setattr("aviationstack_mcp2.client.http.asyncio.sleep", sleep)
+    monkeypatch.setattr("aviationstack_mcp_server.client.http.asyncio.sleep", sleep)
 
     response = await client.request("GET", "https://example.com/flights")
 

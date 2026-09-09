@@ -1,4 +1,4 @@
-from aviationstack_mcp2.config.settings import Environment, Settings
+from aviationstack_mcp_server.config.settings import Environment, Settings
 
 
 def test_settings_with_required_api_key():

@@ -1,6 +1,6 @@
 import pytest
 
-from aviationstack_mcp2.mcp.server import create_server
+from aviationstack_mcp_server.mcp.server import create_server
 
 
 @pytest.mark.asyncio

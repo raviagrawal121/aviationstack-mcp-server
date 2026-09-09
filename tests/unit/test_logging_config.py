@@ -1,6 +1,6 @@
 import pytest
 
-from aviationstack_mcp2.logging_config import configure_logging
+from aviationstack_mcp_server.logging_config import configure_logging
 
 
 def test_configure_logging_accepts_valid_level() -> None:

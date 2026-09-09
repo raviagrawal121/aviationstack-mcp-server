@@ -1,9 +1,9 @@
-from aviationstack_mcp2.errors import (
+from aviationstack_mcp_server.errors import (
     AviationstackAuthenticationError,
     AviationstackRateLimitError,
     AviationstackTimeoutError,
 )
-from aviationstack_mcp2.mcp.errors import translate_aviationstack_error
+from aviationstack_mcp_server.mcp.errors import translate_aviationstack_error
 
 
 def test_authentication_error_message() -> None:

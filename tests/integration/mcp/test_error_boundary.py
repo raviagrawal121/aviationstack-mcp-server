@@ -6,11 +6,11 @@ import httpx
 import pytest
 from mcp import Client
 
-from aviationstack_mcp2.client import AviationstackClient, HTTPClient
-from aviationstack_mcp2.config import Settings
-from aviationstack_mcp2.errors import AviationstackRateLimitError
-from aviationstack_mcp2.logging_config import CorrelationIdFilter
-from aviationstack_mcp2.mcp.server import create_server
+from aviationstack_mcp_server.client import AviationstackClient, HTTPClient
+from aviationstack_mcp_server.config import Settings
+from aviationstack_mcp_server.errors import AviationstackRateLimitError
+from aviationstack_mcp_server.logging_config import CorrelationIdFilter
+from aviationstack_mcp_server.mcp.server import create_server
 
 
 class RateLimitFakeClient:
@@ -114,24 +114,24 @@ async def test_mcp_tool_logs_shared_correlation_id(
         for record in caplog.records
         if record.name
         in {
-            "aviationstack_mcp2.mcp.errors",
-            "aviationstack_mcp2.client.aviationstack",
-            "aviationstack_mcp2.client.http",
+            "aviationstack_mcp_server.mcp.errors",
+            "aviationstack_mcp_server.client.aviationstack",
+            "aviationstack_mcp_server.client.http",
         }
         and record.correlation_id != "-"
     ]
     mcp_ids = {
         record.correlation_id
         for record in request_records
-        if record.name == "aviationstack_mcp2.mcp.errors"
+        if record.name == "aviationstack_mcp_server.mcp.errors"
     }
     http_ids = {
         record.correlation_id
         for record in request_records
         if record.name
         in {
-            "aviationstack_mcp2.client.aviationstack",
-            "aviationstack_mcp2.client.http",
+            "aviationstack_mcp_server.client.aviationstack",
+            "aviationstack_mcp_server.client.http",
         }
     }
     correlation_ids = mcp_ids | http_ids

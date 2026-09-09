@@ -7,9 +7,9 @@ from datetime import date, timedelta
 import pytest
 from pydantic import ValidationError
 
-from aviationstack_mcp2.client import AviationstackClient, HTTPClient
-from aviationstack_mcp2.config import Settings
-from aviationstack_mcp2.errors import (
+from aviationstack_mcp_server.client import AviationstackClient, HTTPClient
+from aviationstack_mcp_server.config import Settings
+from aviationstack_mcp_server.errors import (
     AviationstackAPIError,
     AviationstackAuthenticationError,
     AviationstackAuthorizationError,

@@ -2,8 +2,8 @@ from unittest.mock import AsyncMock, Mock
 
 import pytest
 
-from aviationstack_mcp2.client import AviationstackClient, HTTPClient
-from aviationstack_mcp2.config import Settings
+from aviationstack_mcp_server.client import AviationstackClient, HTTPClient
+from aviationstack_mcp_server.config import Settings
 
 
 def test_aviationstack_client_builds_correctly() -> None:

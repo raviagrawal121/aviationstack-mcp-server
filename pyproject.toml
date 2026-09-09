@@ -1,12 +1,36 @@
 [project]
-name = "aviationstack-mcp2"
-version = "2.0.0"
-description = "A production-ready Model Context Protocol (MCP) server that integrates with the Aviationstack API to deliver real-time flight tracking, airport schedules, future routes, and aircraft data."
+name = "aviationstack-mcp-server"
+version = "0.1.0"
+description = "An open-source Model Context Protocol server for the Aviationstack aviation API."
 readme = "README.md"
-authors = [
-    { name = "Ravi Agarwal", email = "raviagrawal1121@gmail.com" }
-]
 requires-python = ">=3.13"
+
+authors = [
+    { name = "Ravi Agarwal", email = "raviagrawal1121@gmail.com" },
+]
+
+license = "MIT"
+
+keywords = [
+    "mcp",
+    "model-context-protocol",
+    "aviationstack",
+    "aviation",
+    "flights",
+    "ai",
+    "llm",
+]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
 dependencies = [
     "httpx>=0.28.1",
     "mcp[cli]>=2.2.0",
@@ -16,7 +40,7 @@ dependencies = [
 ]
 
 [project.scripts]
-aviationstack-mcp2 = "aviationstack_mcp2:main"
+aviationstack-mcp-server = "aviationstack_mcp_server.__main__:main"
 
 [build-system]
 requires = ["uv_build>=0.12.10,<0.13.0"]
@@ -33,7 +57,7 @@ dev = [
 
 [tool.ruff]
 line-length = 100
-target-version = "py311"
+target-version = "py313"
 
 
 [tool.ruff.lint]

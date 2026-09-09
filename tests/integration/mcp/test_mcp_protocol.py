@@ -1,7 +1,7 @@
 import pytest
 from mcp import Client
 
-from aviationstack_mcp2.mcp.server import create_server
+from aviationstack_mcp_server.mcp.server import create_server
 from tests.integration.mcp.fakes import FakeAviationstackClient
 
 

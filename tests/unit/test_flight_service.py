@@ -2,12 +2,12 @@ from unittest.mock import AsyncMock
 
 import pytest
 
-from aviationstack_mcp2.models import Flight
-from aviationstack_mcp2.models.queries import (
+from aviationstack_mcp_server.models import Flight
+from aviationstack_mcp_server.models.queries import (
     AirportScheduleQuery,
     FlightSearchQuery,
 )
-from aviationstack_mcp2.services import FlightService
+from aviationstack_mcp_server.services import FlightService
 
 
 @pytest.mark.asyncio
@@ -80,13 +80,13 @@ async def test_invalid_schedule_type_is_rejected() -> None:
 
 # import pytest
 
-# from aviationstack_mcp2.models import Flight
-# from aviationstack_mcp2.models.queries import (
+# from aviationstack_mcp_server.models import Flight
+# from aviationstack_mcp_server.models.queries import (
 #     AirportScheduleQuery,
 #     FlightSearchQuery,
 # )
 
-# from aviationstack_mcp2.services import FlightService
+# from aviationstack_mcp_server.services import FlightService
 
 
 # @pytest.mark.asyncio

@@ -4,8 +4,8 @@ import pytest
 from mcp import Client
 from pydantic import ValidationError
 
-from aviationstack_mcp2.config import Settings
-from aviationstack_mcp2.mcp.server import create_server
+from aviationstack_mcp_server.config import Settings
+from aviationstack_mcp_server.mcp.server import create_server
 
 
 @pytest.mark.live_api

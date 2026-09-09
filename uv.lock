@@ -112,8 +112,8 @@ wheels = [
 ]
 
 [[package]]
-name = "aviationstack-mcp2"
-version = "2.0.0"
+name = "aviationstack-mcp-server"
+version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "httpx" },

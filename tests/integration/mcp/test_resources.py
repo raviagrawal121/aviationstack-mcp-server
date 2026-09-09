@@ -1,6 +1,6 @@
 import pytest
 
-from aviationstack_mcp2.mcp.server import create_server
+from aviationstack_mcp_server.mcp.server import create_server
 
 
 @pytest.mark.asyncio
@@ -41,7 +41,7 @@ async def test_server_metadata_contains_project_name() -> None:
 
     text = "\n".join(content.content for content in contents if isinstance(content.content, str))
 
-    assert "aviationstack_mcp2" in text
+    assert "aviationstack_mcp_server" in text
     assert "AVIATIONSTACK_API_KEY" not in text
     assert "access_key" not in text
     assert "super-secret" not in text
