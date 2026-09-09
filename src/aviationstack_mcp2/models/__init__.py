@@ -20,9 +20,6 @@ from .flight import (
     ScheduleTimeReference,
 )
 from .location import City, CityResponse, Country, CountryResponse
-from .route import Route, RouteResponse
-from .tax import Tax, TaxResponse
-
 from .queries import (
     AirlineSearchQuery,
     AirportScheduleQuery,
@@ -37,6 +34,8 @@ from .queries import (
     ScheduleType,
     TaxSearchQuery,
 )
+from .route import Route, RouteResponse
+from .tax import Tax, TaxResponse
 
 __all__ = [
     "AircraftType",
