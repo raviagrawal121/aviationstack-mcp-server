@@ -2,7 +2,23 @@ from __future__ import annotations
 
 
 class AviationstackError(Exception):
-    """Base exception for the Aviationstack MCP application."""
+    """Base exception for all Aviationstack application errors."""
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        status_code: int | None = None,
+        error_code: str | None = None,
+    ) -> None:
+        super().__init__(message)
+        self.message = message
+        self.status_code = status_code
+        self.error_code = error_code
+
+    def __str__(self) -> str:
+        return self.message
+
 
 
 class AviationstackConfigurationError(AviationstackError):

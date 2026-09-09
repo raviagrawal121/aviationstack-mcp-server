@@ -5,7 +5,9 @@ from typing import Any
 
 from aviationstack_mcp2.client.http import HTTPClient
 from aviationstack_mcp2.config import Settings
-from aviationstack_mcp2.errors import AviationstackAPIError
+from aviationstack_mcp2.errors import (
+    AviationstackAPIError,
+)
 
 
 class AviationstackClient:
@@ -77,24 +79,32 @@ class AviationstackClient:
             raise AviationstackAPIError("Aviationstack returned an unexpected response format.")
 
         return payload
-
+    
     @staticmethod
-    def _raise_for_api_error(payload: dict[str, Any]) -> None:
+    def _raise_for_api_error(
+        payload: dict[str, Any],
+    ) -> None:
         """Translate Aviationstack application-level errors."""
 
         error = payload.get("error")
 
-        if not error:
+        if not isinstance(error, dict):
             return
 
-        if isinstance(error, dict):
-            error_type = error.get("type", "api_error")
-            error_code = error.get("code", "unknown")
-            message = error.get(
-                "message",
-                "Aviationstack returned an API error.",
-            )
+        error_type = error.get("type")
+        error_code = error.get("code")
+        message = error.get("message")
 
-            raise AviationstackAPIError(f"{error_type} ({error_code}): {message}")
+        if not isinstance(error_type, str):
+            error_type = "api_error"
 
-        raise AviationstackAPIError("Aviationstack returned an unknown API error.")
+        if not isinstance(error_code, str):
+            error_code = None
+
+        if not isinstance(message, str):
+            message = "Aviationstack returned an API error."
+
+        raise AviationstackAPIError(
+            f"{error_type}: {message}",
+            error_code=error_code,
+        )

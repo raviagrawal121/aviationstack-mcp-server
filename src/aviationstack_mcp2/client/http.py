@@ -101,30 +101,43 @@ class HTTPClient:
         await self._client.aclose()
 
     @staticmethod
-    def _raise_for_status(response: httpx.Response) -> None:
-        """Translate HTTP status codes into application exceptions."""
-
+    def _raise_for_status(
+        response: httpx.Response,
+    ) -> None:
         status_code = response.status_code
 
-        if status_code in {401}:
-            raise AviationstackAuthenticationError("Aviationstack authentication failed.")
+        if status_code == 401:
+            raise AviationstackAuthenticationError(
+                "Aviationstack authentication failed.",
+                status_code=status_code,
+            )
 
-        if status_code in {403}:
+        if status_code == 403:
             raise AviationstackAuthorizationError(
-                "Aviationstack authorization failed or the operation "
-                "is not available for the current plan."
+                "Aviationstack authorization failed.",
+                status_code=status_code,
             )
 
         if status_code == 404:
-            raise AviationstackNotFoundError("The requested Aviationstack resource was not found.")
+            raise AviationstackNotFoundError(
+                "The requested Aviationstack resource was not found.",
+                status_code=status_code,
+            )
 
         if status_code == 429:
-            raise AviationstackRateLimitError("Aviationstack API rate limit exceeded.")
+            raise AviationstackRateLimitError(
+                "Aviationstack rate limit exceeded.",
+                status_code=status_code,
+            )
 
-        if status_code >= 500:
-            raise AviationstackServerError(f"Aviationstack server returned HTTP {status_code}.")
+        if 500 <= status_code <= 599:
+            raise AviationstackServerError(
+                "Aviationstack returned a server error.",
+                status_code=status_code,
+            )
 
         if status_code >= 400:
             raise AviationstackRequestError(
-                f"Aviationstack request failed with HTTP {status_code}."
+                "Aviationstack request failed.",
+                status_code=status_code,
             )
