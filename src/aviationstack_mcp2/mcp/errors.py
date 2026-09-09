@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 from collections.abc import Awaitable, Callable
 from functools import wraps
+from time import perf_counter
 from typing import Any, TypeVar
 
 from mcp.types import CallToolResult, TextContent
@@ -18,6 +19,10 @@ from aviationstack_mcp2.errors import (
     AviationstackRequestError,
     AviationstackServerError,
     AviationstackTimeoutError,
+)
+from aviationstack_mcp2.observability import (
+    generate_correlation_id,
+    set_correlation_id,
 )
 
 logger = logging.getLogger(__name__)
@@ -65,27 +70,50 @@ def mcp_error_message(error: AviationstackError) -> str:
 
 def mcp_error_boundary(
     func: Callable[..., Awaitable[T]],
-) -> Callable[..., Awaitable[T]]:
+) -> Callable[..., Awaitable[T | CallToolResult]]:
     """Convert tool failures into safe MCP-facing errors."""
 
     @wraps(func)
     async def wrapper(*args: Any, **kwargs: Any) -> T | CallToolResult:
+        tool_name = func.__name__
+        correlation = generate_correlation_id()
+        set_correlation_id(correlation)
+        started_at = perf_counter()
+        logger.info("MCP tool started tool=%s", tool_name)
+
         try:
-            return await func(*args, **kwargs)
+            result = await func(*args, **kwargs)
+            duration_ms = (perf_counter() - started_at) * 1000
+            logger.info(
+                "MCP tool completed tool=%s duration_ms=%.2f",
+                tool_name,
+                duration_ms,
+            )
+            return result
         except AviationstackError as exc:
+            duration_ms = (perf_counter() - started_at) * 1000
             logger.error(
-                "MCP tool failed error_type=%s",
+                "MCP tool failed tool=%s duration_ms=%.2f error_type=%s",
+                tool_name,
+                duration_ms,
                 type(exc).__name__,
             )
             return CallToolResult(
                 content=[TextContent(text=translate_aviationstack_error(exc))],
-                isError=True,
+                is_error=True,
             )
         except Exception:
-            logger.exception("Unexpected MCP tool failure")
+            duration_ms = (perf_counter() - started_at) * 1000
+            logger.exception(
+                "Unexpected MCP tool failure tool=%s duration_ms=%.2f",
+                tool_name,
+                duration_ms,
+            )
             return CallToolResult(
                 content=[TextContent(text="Internal server error.")],
-                isError=True,
+                is_error=True,
             )
+        finally:
+            set_correlation_id("")
 
     return wrapper

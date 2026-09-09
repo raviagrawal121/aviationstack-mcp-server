@@ -3,6 +3,7 @@ import logging
 from mcp.server.mcpserver import Context
 
 from aviationstack_mcp2.mcp.dependencies import AppContext
+from aviationstack_mcp2.mcp.errors import mcp_error_boundary
 from aviationstack_mcp2.models.queries import RecordLimitQuery
 
 logger = logging.getLogger(__name__)
@@ -19,6 +20,7 @@ def register_aircraft_tools(server) -> None:
             "Use the limit parameter to control the number of records."
         ),
     )
+    @mcp_error_boundary
     async def list_aircraft_types(
         query: RecordLimitQuery,
         ctx: Context[AppContext],
@@ -44,6 +46,7 @@ def register_aircraft_tools(server) -> None:
             "the number of records."
         ),
     )
+    @mcp_error_boundary
     async def list_airplanes(
         query: RecordLimitQuery,
         ctx: Context[AppContext],

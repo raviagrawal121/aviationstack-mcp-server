@@ -3,6 +3,7 @@ import logging
 from mcp.server.mcpserver import Context
 
 from aviationstack_mcp2.mcp.dependencies import AppContext
+from aviationstack_mcp2.mcp.errors import mcp_error_boundary
 from aviationstack_mcp2.models.queries import (
     AirportScheduleQuery,
     FlightSearchQuery,
@@ -25,6 +26,7 @@ def register_flight_tools(
             "arrival, date, and pagination filters."
         ),
     )
+    @mcp_error_boundary
     async def search_flights(
         query: FlightSearchQuery,
         ctx: Context[AppContext],
@@ -65,6 +67,7 @@ def register_flight_tools(
             "arrival, and pagination filters."
         ),
     )
+    @mcp_error_boundary
     async def search_historical_flights(
         query: HistoricalFlightQuery,
         ctx: Context[AppContext],
@@ -99,6 +102,7 @@ def register_flight_tools(
             "an airport IATA code and schedule filters."
         ),
     )
+    @mcp_error_boundary
     async def get_flight_schedule(
         query: AirportScheduleQuery,
         ctx: Context[AppContext],

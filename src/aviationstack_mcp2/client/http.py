@@ -4,6 +4,7 @@ import asyncio
 import logging
 import random
 from collections.abc import Mapping
+from time import perf_counter
 from typing import Any
 
 import httpx
@@ -64,14 +65,20 @@ class HTTPClient:
         """Execute an HTTP request with retry handling."""
 
         max_attempts = self._settings.aviationstack_retry_max_attempts
+        endpoint = httpx.URL(url).path or "/"
 
         for attempt_number in range(1, max_attempts + 1):
+            started_at = perf_counter()
             logger.debug(
-                "Sending HTTP request: method=%s url=%s attempt=%s params=%s",
+                "HTTP request started method=%s endpoint=%s attempt=%s params=%s",
                 method,
-                url,
+                endpoint,
                 attempt_number,
-                sorted(params) if params else [],
+                sorted(
+                    key
+                    for key in params
+                    if key != "access_key"
+                ) if params else [],
             )
 
             try:
@@ -82,12 +89,16 @@ class HTTPClient:
                     headers=headers,
                 )
             except httpx.TimeoutException as exc:
+                duration_ms = (perf_counter() - started_at) * 1000
                 if attempt_number >= max_attempts:
                     logger.error(
-                        "HTTP request failed after %s attempts: method=%s url=%s",
+                        "HTTP request failed after %s attempts: method=%s endpoint=%s "
+                        "error_type=%s duration_ms=%.2f",
                         max_attempts,
                         method,
-                        url,
+                        endpoint,
+                        type(exc).__name__,
+                        duration_ms,
                     )
                     raise AviationstackTimeoutError(
                         "Aviationstack request timed out."
@@ -100,12 +111,16 @@ class HTTPClient:
                 )
                 continue
             except httpx.RequestError as exc:
+                duration_ms = (perf_counter() - started_at) * 1000
                 if attempt_number >= max_attempts:
                     logger.error(
-                        "HTTP request failed after %s attempts: method=%s url=%s",
+                        "HTTP request failed after %s attempts: method=%s endpoint=%s "
+                        "error_type=%s duration_ms=%.2f",
                         max_attempts,
                         method,
-                        url,
+                        endpoint,
+                        type(exc).__name__,
+                        duration_ms,
                     )
                     raise AviationstackRequestError(
                         "Unable to reach the Aviationstack API."
@@ -118,15 +133,27 @@ class HTTPClient:
                 )
                 continue
 
+            duration_ms = (perf_counter() - started_at) * 1000
+            logger.debug(
+                "HTTP response received method=%s endpoint=%s status=%s "
+                "attempt=%s duration_ms=%.2f",
+                method,
+                endpoint,
+                response.status_code,
+                attempt_number,
+                duration_ms,
+            )
+
             if is_retryable_status(response.status_code):
                 if attempt_number >= max_attempts:
                     logger.error(
-                        "HTTP request failed after %s attempts: method=%s url=%s "
-                        "status=%s",
+                        "HTTP request failed after %s attempts: method=%s endpoint=%s "
+                        "status=%s duration_ms=%.2f",
                         max_attempts,
                         method,
-                        url,
+                        endpoint,
                         response.status_code,
+                        duration_ms,
                     )
                     self._raise_for_status(response)
 
@@ -139,14 +166,6 @@ class HTTPClient:
                 continue
 
             self._raise_for_status(response)
-
-            logger.debug(
-                "Received HTTP response: method=%s url=%s status=%s attempt=%s",
-                method,
-                url,
-                response.status_code,
-                attempt_number,
-            )
             return response
 
         raise AviationstackRequestError("Aviationstack request failed unexpectedly.")
@@ -176,9 +195,9 @@ class HTTPClient:
             retry_after_detail = ""
 
         logger.warning(
-            "Retrying HTTP request: method=%s url=%s attempt=%s delay=%.3f%s",
+            "Retrying HTTP request: method=%s endpoint=%s attempt=%s delay=%.3f%s",
             method,
-            url,
+            httpx.URL(url).path or "/",
             attempt_number + 1,
             delay,
             retry_after_detail,

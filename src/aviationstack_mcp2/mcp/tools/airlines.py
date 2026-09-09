@@ -3,6 +3,7 @@ import logging
 from mcp.server.mcpserver import Context
 
 from aviationstack_mcp2.mcp.dependencies import AppContext
+from aviationstack_mcp2.mcp.errors import mcp_error_boundary
 from aviationstack_mcp2.models.queries import AirlineSearchQuery
 
 logger = logging.getLogger(__name__)
@@ -19,6 +20,7 @@ def register_airline_tools(server) -> None:
             "ICAO code, or other supported airline search criteria."
         ),
     )
+    @mcp_error_boundary
     async def search_airlines(
         query: AirlineSearchQuery,
         ctx: Context[AppContext],

@@ -3,6 +3,7 @@ import logging
 from mcp.server.mcpserver import Context
 
 from aviationstack_mcp2.mcp.dependencies import AppContext
+from aviationstack_mcp2.mcp.errors import mcp_error_boundary
 from aviationstack_mcp2.models.queries import (
     RecordLimitQuery,
     RouteSearchQuery,
@@ -23,6 +24,7 @@ def register_reference_tools(server) -> None:
             "Use the limit parameter to control the number of records."
         ),
     )
+    @mcp_error_boundary
     async def list_countries(
         query: RecordLimitQuery,
         ctx: Context[AppContext],
@@ -47,6 +49,7 @@ def register_reference_tools(server) -> None:
             "Use the limit parameter to control the number of records."
         ),
     )
+    @mcp_error_boundary
     async def list_cities(
         query: RecordLimitQuery,
         ctx: Context[AppContext],
@@ -72,6 +75,7 @@ def register_reference_tools(server) -> None:
             "airport, and pagination."
         ),
     )
+    @mcp_error_boundary
     async def search_routes(
         query: RouteSearchQuery,
         ctx: Context[AppContext],
@@ -105,6 +109,7 @@ def register_reference_tools(server) -> None:
             "filters and pagination."
         ),
     )
+    @mcp_error_boundary
     async def search_taxes(
         query: TaxSearchQuery,
         ctx: Context[AppContext],
