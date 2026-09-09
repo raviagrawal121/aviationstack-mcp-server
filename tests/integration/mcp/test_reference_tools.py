@@ -20,6 +20,7 @@ async def test_reference_tools_are_registered() -> None:
 
     assert expected_tools.issubset(tool_names)
 
+
 @pytest.mark.asyncio
 async def test_reference_tools_do_not_expose_context() -> None:
     server = create_server()
@@ -34,11 +35,7 @@ async def test_reference_tools_do_not_expose_context() -> None:
     }
 
     for name in reference_tools:
-        tool = next(
-            tool
-            for tool in tools
-            if tool.name == name
-        )
+        tool = next(tool for tool in tools if tool.name == name)
 
         properties = tool.input_schema.get(
             "properties",
@@ -46,6 +43,7 @@ async def test_reference_tools_do_not_expose_context() -> None:
         )
 
         assert "ctx" not in properties
+
 
 @pytest.mark.asyncio
 async def test_reference_list_tools_expose_query() -> None:
@@ -57,11 +55,7 @@ async def test_reference_list_tools_expose_query() -> None:
         "list_countries",
         "list_cities",
     ):
-        tool = next(
-            tool
-            for tool in tools
-            if tool.name == name
-        )
+        tool = next(tool for tool in tools if tool.name == name)
 
         properties = tool.input_schema.get(
             "properties",
@@ -69,6 +63,7 @@ async def test_reference_list_tools_expose_query() -> None:
         )
 
         assert "query" in properties
+
 
 @pytest.mark.asyncio
 async def test_reference_search_tools_expose_query() -> None:
@@ -80,11 +75,7 @@ async def test_reference_search_tools_expose_query() -> None:
         "search_routes",
         "search_taxes",
     ):
-        tool = next(
-            tool
-            for tool in tools
-            if tool.name == name
-        )
+        tool = next(tool for tool in tools if tool.name == name)
 
         properties = tool.input_schema.get(
             "properties",

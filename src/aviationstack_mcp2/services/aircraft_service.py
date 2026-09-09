@@ -84,6 +84,7 @@ class AircraftService:
             min(requested_count, len(records)),
         )
 
+
 # from __future__ import annotations
 
 # import random

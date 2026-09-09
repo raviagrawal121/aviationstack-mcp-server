@@ -76,8 +76,7 @@ def register_flight_tools(
 
         app = ctx.request_context.lifespan_context
         logger.info(
-            "MCP tool called: search_historical_flights date=%s limit=%s "
-            "filters=%s",
+            "MCP tool called: search_historical_flights date=%s limit=%s filters=%s",
             query.flight_date,
             query.limit,
             [
@@ -111,8 +110,7 @@ def register_flight_tools(
 
         app = ctx.request_context.lifespan_context
         logger.info(
-            "MCP tool called: get_flight_schedule airport=%s type=%s "
-            "airline_filter=%s limit=%s",
+            "MCP tool called: get_flight_schedule airport=%s type=%s airline_filter=%s limit=%s",
             query.airport_iata,
             query.schedule_type.value,
             query.airline_name is not None,

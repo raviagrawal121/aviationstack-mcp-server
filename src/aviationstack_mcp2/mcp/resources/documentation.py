@@ -15,8 +15,7 @@ def register_documentation_resources(server: MCPServer) -> None:
         name="aviationstack_endpoints",
         title="Aviationstack API Endpoints",
         description=(
-            "Public documentation of the Aviationstack API "
-            "domains used by this MCP server."
+            "Public documentation of the Aviationstack API domains used by this MCP server."
         ),
         mime_type="application/json",
     )
@@ -98,10 +97,7 @@ def register_documentation_resources(server: MCPServer) -> None:
         "aviationstack://documentation/tools",
         name="tool_documentation",
         title="Aviationstack MCP Tools",
-        description=(
-            "Documentation of the tools exposed by the "
-            "Aviationstack MCP server."
-        ),
+        description=("Documentation of the tools exposed by the Aviationstack MCP server."),
         mime_type="application/json",
     )
     def tool_documentation() -> dict[str, object]:

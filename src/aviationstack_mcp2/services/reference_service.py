@@ -89,11 +89,7 @@ class ReferenceDataService:
             "arr_iata": query.arrival_iata,
         }
 
-        params = {
-            key: value
-            for key, value in params.items()
-            if value is not None
-        }
+        params = {key: value for key, value in params.items() if value is not None}
 
         logger.info(
             "Searching routes: limit=%s offset=%s filters=%s",
@@ -124,11 +120,7 @@ class ReferenceDataService:
             "search": query.search,
         }
 
-        params = {
-            key: value
-            for key, value in params.items()
-            if value is not None
-        }
+        params = {key: value for key, value in params.items() if value is not None}
 
         logger.info(
             "Searching taxes: limit=%s offset=%s search_provided=%s",
@@ -161,6 +153,7 @@ class ReferenceDataService:
             records,
             min(requested_count, len(records)),
         )
+
 
 # from __future__ import annotations
 

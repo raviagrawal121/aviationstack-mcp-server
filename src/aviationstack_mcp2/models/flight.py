@@ -71,7 +71,6 @@ class FlightResponse(AviationstackModel):
     data: list[Flight] = Field(default_factory=list)
 
 
-
 class ScheduleFlightIdentifier(AviationstackModel):
     """Flight identifier returned by timetable endpoints."""
 

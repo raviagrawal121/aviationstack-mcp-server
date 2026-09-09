@@ -13,17 +13,14 @@ async def test_airline_tools_are_registered() -> None:
 
     assert "search_airlines" in tool_names
 
+
 @pytest.mark.asyncio
 async def test_search_airlines_schema() -> None:
     server = create_server()
 
     tools = await server.list_tools()
 
-    search_airlines = next(
-        tool
-        for tool in tools
-        if tool.name == "search_airlines"
-    )
+    search_airlines = next(tool for tool in tools if tool.name == "search_airlines")
 
     properties = search_airlines.input_schema.get(
         "properties",
@@ -33,17 +30,14 @@ async def test_search_airlines_schema() -> None:
     assert "query" in properties
     assert "ctx" not in properties
 
+
 @pytest.mark.asyncio
 async def test_search_airlines_exposes_query_fields() -> None:
     server = create_server()
 
     tools = await server.list_tools()
 
-    tool = next(
-        tool
-        for tool in tools
-        if tool.name == "search_airlines"
-    )
+    tool = next(tool for tool in tools if tool.name == "search_airlines")
 
     input_schema = tool.input_schema
 

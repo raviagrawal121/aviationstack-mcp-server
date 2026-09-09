@@ -14,8 +14,7 @@ def register_aviation_prompts(server: MCPServer) -> None:
         name="plan_flight_search",
         title="Plan Flight Search",
         description=(
-            "Help formulate a flight search using available "
-            "Aviationstack flight filters."
+            "Help formulate a flight search using available Aviationstack flight filters."
         ),
     )
     def plan_flight_search(
@@ -41,10 +40,7 @@ def register_aviation_prompts(server: MCPServer) -> None:
     @server.prompt(
         name="plan_schedule_search",
         title="Plan Schedule Search",
-        description=(
-            "Help formulate an airport arrival or departure "
-            "schedule search."
-        ),
+        description=("Help formulate an airport arrival or departure schedule search."),
     )
     def plan_schedule_search(
         airport: str,
@@ -62,8 +58,7 @@ def register_aviation_prompts(server: MCPServer) -> None:
             "schedule information relevant to the user's request."
         )
         logger.debug(
-            "Generated prompt: plan_schedule_search airport=%s schedule_type=%s "
-            "prompt_length=%s",
+            "Generated prompt: plan_schedule_search airport=%s schedule_type=%s prompt_length=%s",
             airport,
             schedule_type,
             len(prompt),
@@ -74,8 +69,7 @@ def register_aviation_prompts(server: MCPServer) -> None:
         name="plan_reference_data_search",
         title="Plan Reference Data Search",
         description=(
-            "Help determine which Aviationstack reference-data "
-            "tool should be used for a lookup."
+            "Help determine which Aviationstack reference-data tool should be used for a lookup."
         ),
     )
     def plan_reference_data_search(
@@ -97,8 +91,7 @@ def register_aviation_prompts(server: MCPServer) -> None:
             "Use the selected tool with its structured query."
         )
         logger.debug(
-            "Generated prompt: plan_reference_data_search request_length=%s "
-            "prompt_length=%s",
+            "Generated prompt: plan_reference_data_search request_length=%s prompt_length=%s",
             len(request),
             len(prompt),
         )

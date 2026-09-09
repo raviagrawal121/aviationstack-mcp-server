@@ -1,4 +1,3 @@
-
 from unittest.mock import AsyncMock
 
 import pytest
@@ -75,7 +74,6 @@ async def test_invalid_schedule_type_is_rejected() -> None:
             airport_iata="JFK",
             schedule_type="invalid",
         )
-
 
 
 # from unittest.mock import AsyncMock

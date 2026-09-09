@@ -19,24 +19,19 @@ async def test_aviation_prompts_are_registered() -> None:
 
     assert expected_prompts.issubset(prompt_names)
 
+
 @pytest.mark.asyncio
 async def test_flight_search_prompt_arguments() -> None:
     server = create_server()
 
     prompts = await server.list_prompts()
 
-    prompt = next(
-        prompt
-        for prompt in prompts
-        if prompt.name == "plan_flight_search"
-    )
+    prompt = next(prompt for prompt in prompts if prompt.name == "plan_flight_search")
 
-    argument_names = {
-        argument.name
-        for argument in (prompt.arguments or [])
-    }
+    argument_names = {argument.name for argument in (prompt.arguments or [])}
 
     assert "request" in argument_names
+
 
 @pytest.mark.asyncio
 async def test_schedule_prompt_arguments() -> None:
@@ -44,19 +39,13 @@ async def test_schedule_prompt_arguments() -> None:
 
     prompts = await server.list_prompts()
 
-    prompt = next(
-        prompt
-        for prompt in prompts
-        if prompt.name == "plan_schedule_search"
-    )
+    prompt = next(prompt for prompt in prompts if prompt.name == "plan_schedule_search")
 
-    argument_names = {
-        argument.name
-        for argument in (prompt.arguments or [])
-    }
+    argument_names = {argument.name for argument in (prompt.arguments or [])}
 
     assert "airport" in argument_names
     assert "schedule_type" in argument_names
+
 
 @pytest.mark.asyncio
 async def test_flight_search_prompt_content() -> None:

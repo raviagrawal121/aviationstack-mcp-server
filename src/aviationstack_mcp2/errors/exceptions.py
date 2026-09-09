@@ -20,7 +20,6 @@ class AviationstackError(Exception):
         return self.message
 
 
-
 class AviationstackConfigurationError(AviationstackError):
     """Raised when the Aviationstack client is incorrectly configured."""
 

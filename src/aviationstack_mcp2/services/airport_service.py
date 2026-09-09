@@ -27,11 +27,7 @@ class AirportService:
             "search": query.search,
         }
 
-        params = {
-            key: value
-            for key, value in params.items()
-            if value is not None
-        }
+        params = {key: value for key, value in params.items() if value is not None}
 
         logger.info(
             "Searching airports: limit=%s offset=%s search_provided=%s",

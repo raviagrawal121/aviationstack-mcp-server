@@ -25,9 +25,7 @@ class FakeAviationstackClient:
                 ]
             }
 
-        raise AssertionError(
-            f"Unexpected endpoint in test: {endpoint}"
-        )
+        raise AssertionError(f"Unexpected endpoint in test: {endpoint}")
 
     async def close(self) -> None:
         self.closed = True

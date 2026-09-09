@@ -47,8 +47,7 @@ def test_logging_filter_adds_correlation_id() -> None:
 
 
 @pytest.mark.asyncio
-async def test_tool_boundary_logs_one_correlation_id(
-) -> None:
+async def test_tool_boundary_logs_one_correlation_id() -> None:
     @mcp_error_boundary
     async def operation() -> str:
         return "ok"

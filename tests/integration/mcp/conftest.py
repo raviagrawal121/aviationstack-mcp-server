@@ -26,7 +26,6 @@ async def mcp_client() -> AsyncIterator[Client]:
         yield client
 
 
-
 # from collections.abc import AsyncIterator
 
 # import pytest_asyncio

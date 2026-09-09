@@ -6,8 +6,7 @@ from typing import Final
 from aviationstack_mcp2.observability import get_correlation_id
 
 DEFAULT_LOG_FORMAT: Final = (
-    "%(asctime)s | %(levelname)s | correlation_id=%(correlation_id)s | "
-    "%(name)s | %(message)s"
+    "%(asctime)s | %(levelname)s | correlation_id=%(correlation_id)s | %(name)s | %(message)s"
 )
 
 LOGGER_NAME: Final = "aviationstack_mcp2"

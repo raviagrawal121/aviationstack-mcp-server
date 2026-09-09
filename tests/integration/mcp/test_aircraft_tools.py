@@ -25,11 +25,7 @@ async def test_aircraft_tools_do_not_expose_context() -> None:
         "list_aircraft_types",
         "list_airplanes",
     ):
-        tool = next(
-            tool
-            for tool in tools
-            if tool.name == name
-        )
+        tool = next(tool for tool in tools if tool.name == name)
 
         properties = tool.input_schema.get(
             "properties",
@@ -37,6 +33,7 @@ async def test_aircraft_tools_do_not_expose_context() -> None:
         )
 
         assert "ctx" not in properties
+
 
 @pytest.mark.asyncio
 async def test_aircraft_tools_expose_limit() -> None:
@@ -48,13 +45,8 @@ async def test_aircraft_tools_expose_limit() -> None:
         "list_aircraft_types",
         "list_airplanes",
     ):
-        tool = next(
-            tool
-            for tool in tools
-            if tool.name == name
-        )
+        tool = next(tool for tool in tools if tool.name == name)
 
-        
         input_schema = tool.input_schema
 
         query_schema = input_schema["properties"]["query"]

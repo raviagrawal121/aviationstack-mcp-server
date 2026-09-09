@@ -38,6 +38,7 @@ class ScheduleType(StrEnum):
     ARRIVAL = "arrival"
     DEPARTURE = "departure"
 
+
 class FlightSearchQuery(QueryModel):
     """Parameters for searching live flights."""
 
@@ -97,6 +98,7 @@ class FlightSearchQuery(QueryModel):
             return None
 
         return value.strip().upper()
+
 
 class HistoricalFlightQuery(QueryModel):
     """Parameters for historical flight searches."""
@@ -218,6 +220,7 @@ class AirportSearchQuery(PaginationQuery):
         description="Airport name, city, or other search text.",
     )
 
+
 class AirlineSearchQuery(PaginationQuery):
     """Parameters for airline searches."""
 
@@ -225,6 +228,7 @@ class AirlineSearchQuery(PaginationQuery):
         default=None,
         description="Airline search text.",
     )
+
 
 class RouteSearchQuery(PaginationQuery):
     """Parameters for route searches."""
@@ -260,6 +264,7 @@ class RouteSearchQuery(PaginationQuery):
 
         return value.strip().upper()
 
+
 class TaxSearchQuery(PaginationQuery):
     """Parameters for tax searches."""
 
@@ -267,6 +272,7 @@ class TaxSearchQuery(PaginationQuery):
         default=None,
         description="Tax name or code search text.",
     )
+
 
 class RecordLimitQuery(QueryModel):
     """Query for bounded reference-data retrieval."""

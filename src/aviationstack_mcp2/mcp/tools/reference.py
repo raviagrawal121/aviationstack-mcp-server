@@ -104,10 +104,7 @@ def register_reference_tools(server) -> None:
     @server.tool(
         name="search_taxes",
         title="Search Taxes",
-        description=(
-            "Search aviation tax records using supported tax "
-            "filters and pagination."
-        ),
+        description=("Search aviation tax records using supported tax filters and pagination."),
     )
     @mcp_error_boundary
     async def search_taxes(

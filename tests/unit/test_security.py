@@ -94,6 +94,7 @@ def test_redaction_is_case_insensitive():
     assert result["ACCESS_KEY"] == "***REDACTED***"
     assert result["Authorization"] == "***REDACTED***"
 
+
 def test_api_key_not_exposed_in_error():
     error = AviationstackAuthenticationError(
         "internal secret value",
@@ -104,12 +105,14 @@ def test_api_key_not_exposed_in_error():
 
     assert "secret" not in message
 
+
 def test_production_requires_https() -> None:
     with pytest.raises(AviationstackConfigurationError):
         validate_api_base_url(
             "http://api.aviationstack.com/v1",
             environment=Environment.PRODUCTION.value,
         )
+
 
 def test_production_accepts_https() -> None:
     validate_api_base_url(

@@ -74,11 +74,7 @@ class HTTPClient:
                 method,
                 endpoint,
                 attempt_number,
-                sorted(
-                    key
-                    for key in params
-                    if key != "access_key"
-                ) if params else [],
+                sorted(key for key in params if key != "access_key") if params else [],
             )
 
             try:
@@ -100,9 +96,7 @@ class HTTPClient:
                         type(exc).__name__,
                         duration_ms,
                     )
-                    raise AviationstackTimeoutError(
-                        "Aviationstack request timed out."
-                    ) from exc
+                    raise AviationstackTimeoutError("Aviationstack request timed out.") from exc
 
                 await self._sleep_before_retry(
                     attempt_number,
@@ -186,8 +180,7 @@ class HTTPClient:
             retry_after_detail = f" retry_after={delay}"
         else:
             base_delay = min(
-                self._settings.aviationstack_retry_backoff_factor
-                * (2 ** (attempt_number - 1)),
+                self._settings.aviationstack_retry_backoff_factor * (2 ** (attempt_number - 1)),
                 MAX_RETRY_DELAY,
             )
             jitter = random.uniform(0, base_delay * 0.1)
@@ -233,6 +226,7 @@ class HTTPClient:
         response: httpx.Response,
     ) -> None:
         status_code = response.status_code
+        error_code = HTTPClient._extract_error_code(response)
 
         if status_code >= 400:
             logger.warning(
@@ -244,12 +238,14 @@ class HTTPClient:
             raise AviationstackAuthenticationError(
                 "Aviationstack authentication failed.",
                 status_code=status_code,
+                error_code=error_code,
             )
 
         if status_code == 403:
             raise AviationstackAuthorizationError(
                 "Aviationstack authorization failed.",
                 status_code=status_code,
+                error_code=error_code,
             )
 
         if status_code == 404:
@@ -262,8 +258,8 @@ class HTTPClient:
             raise AviationstackRateLimitError(
                 "Aviationstack rate limit exceeded.",
                 status_code=status_code,
+                error_code=error_code,
             )
-
         if 500 <= status_code <= 599:
             raise AviationstackServerError(
                 "Aviationstack returned a server error.",
@@ -275,3 +271,22 @@ class HTTPClient:
                 "Aviationstack request failed.",
                 status_code=status_code,
             )
+
+    @staticmethod
+    def _extract_error_code(response: httpx.Response) -> str | None:
+        """Extract only a structured provider error code from an error response."""
+
+        try:
+            payload = response.json()
+        except ValueError:
+            return None
+
+        if not isinstance(payload, dict):
+            return None
+
+        error = payload.get("error")
+        if not isinstance(error, dict):
+            return None
+
+        error_code = error.get("code")
+        return error_code if isinstance(error_code, str) else None

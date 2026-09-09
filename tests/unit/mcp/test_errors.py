@@ -1,51 +1,42 @@
 from aviationstack_mcp2.errors import (
-	AviationstackAuthenticationError,
-	AviationstackRateLimitError,
-	AviationstackTimeoutError,
+    AviationstackAuthenticationError,
+    AviationstackRateLimitError,
+    AviationstackTimeoutError,
 )
 from aviationstack_mcp2.mcp.errors import translate_aviationstack_error
 
 
 def test_authentication_error_message() -> None:
-	error = AviationstackAuthenticationError(
-		"secret internal message",
-		status_code=401,
-	)
+    error = AviationstackAuthenticationError(
+        "secret internal message",
+        status_code=401,
+    )
 
-	assert (
-		translate_aviationstack_error(error)
-		== "Aviationstack authentication failed."
-	)
+    assert translate_aviationstack_error(error) == "Aviationstack authentication failed."
 
 
 def test_rate_limit_error_message() -> None:
-	error = AviationstackRateLimitError(
-		"internal details",
-		status_code=429,
-	)
+    error = AviationstackRateLimitError(
+        "internal details",
+        status_code=429,
+    )
 
-	assert (
-		translate_aviationstack_error(error)
-		== "Aviationstack rate limit exceeded."
-	)
+    assert translate_aviationstack_error(error) == "Aviationstack rate limit exceeded."
 
 
 def test_timeout_error_message() -> None:
-	error = AviationstackTimeoutError("internal details")
+    error = AviationstackTimeoutError("internal details")
 
-	assert (
-		translate_aviationstack_error(error)
-		== "The Aviationstack request timed out."
-	)
+    assert translate_aviationstack_error(error) == "The Aviationstack request timed out."
 
 
 def test_sensitive_information_is_not_exposed() -> None:
-	error = AviationstackAuthenticationError(
-		"access_key=super-secret-value",
-		status_code=401,
-	)
+    error = AviationstackAuthenticationError(
+        "access_key=super-secret-value",
+        status_code=401,
+    )
 
-	message = translate_aviationstack_error(error)
+    message = translate_aviationstack_error(error)
 
-	assert "super-secret-value" not in message
-	assert "access_key" not in message
+    assert "super-secret-value" not in message
+    assert "access_key" not in message

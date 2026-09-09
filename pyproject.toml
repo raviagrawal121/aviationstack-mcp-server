@@ -44,6 +44,7 @@ asyncio_mode = "auto"
 testpaths = ["tests"]
 markers = [
     "live_api: tests that call the live Aviationstack API",
+    "capability_discovery: opt-in live tests that probe API access by endpoint",
 ]
 
 

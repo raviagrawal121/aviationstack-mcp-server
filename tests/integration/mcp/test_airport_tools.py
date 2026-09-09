@@ -13,17 +13,14 @@ async def test_airport_tools_are_registered() -> None:
 
     assert "search_airports" in tool_names
 
+
 @pytest.mark.asyncio
 async def test_search_airports_schema() -> None:
     server = create_server()
 
     tools = await server.list_tools()
 
-    search_airports = next(
-        tool
-        for tool in tools
-        if tool.name == "search_airports"
-    )
+    search_airports = next(tool for tool in tools if tool.name == "search_airports")
 
     properties = search_airports.input_schema.get(
         "properties",
@@ -32,6 +29,7 @@ async def test_search_airports_schema() -> None:
 
     assert "query" in properties
     assert "ctx" not in properties
+
 
 # @pytest.mark.asyncio
 # async def test_search_airports_exposes_query_fields() -> None:
@@ -57,17 +55,14 @@ async def test_search_airports_schema() -> None:
 #     assert "limit" in query_properties
 #     assert "offset" in query_properties
 
+
 @pytest.mark.asyncio
 async def test_search_airports_exposes_query_fields() -> None:
     server = create_server()
 
     tools = await server.list_tools()
 
-    tool = next(
-        tool
-        for tool in tools
-        if tool.name == "search_airports"
-    )
+    tool = next(tool for tool in tools if tool.name == "search_airports")
 
     input_schema = tool.input_schema
 

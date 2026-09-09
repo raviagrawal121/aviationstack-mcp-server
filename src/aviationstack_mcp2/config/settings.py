@@ -21,7 +21,6 @@ _http_url_adapter = TypeAdapter(AnyHttpUrl)
 logger = logging.getLogger(__name__)
 
 
-
 class Environment(StrEnum):
     """Supported application environments."""
 
@@ -65,7 +64,6 @@ class Settings(BaseSettings):
     aviationstack_base_url: str = Field(
         default="https://api.aviationstack.com/v1",
     )
-
 
     # ------------------------------------------------------------------
     # HTTP client
@@ -119,12 +117,10 @@ class Settings(BaseSettings):
         """Reject empty or whitespace-only API keys."""
 
         if not value.get_secret_value().strip():
-            raise ValueError(
-                "AVIATIONSTACK_API_KEY must not be empty."
-            )
+            raise ValueError("AVIATIONSTACK_API_KEY must not be empty.")
 
         return value
-    
+
     @field_validator("aviationstack_base_url")
     @classmethod
     def validate_base_url(cls, value: str) -> str:

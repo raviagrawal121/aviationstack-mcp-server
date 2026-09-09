@@ -66,10 +66,7 @@ def test_api_key_can_be_retrieved_explicitly() -> None:
         aviationstack_api_key="super-secret",
     )
 
-    assert (
-        settings.aviationstack_api_key.get_secret_value()
-        == "super-secret"
-    )
+    assert settings.aviationstack_api_key.get_secret_value() == "super-secret"
 
 
 # ---------------------------------------------------------------------------
@@ -114,9 +111,7 @@ def test_valid_base_url() -> None:
         aviationstack_base_url="https://example.com/v1",
     )
 
-    assert str(settings.aviationstack_base_url) == (
-        "https://example.com/v1"
-    )
+    assert str(settings.aviationstack_base_url) == ("https://example.com/v1")
 
 
 @pytest.mark.parametrize(

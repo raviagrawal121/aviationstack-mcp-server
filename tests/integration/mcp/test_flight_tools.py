@@ -22,11 +22,7 @@ async def test_flight_tool_schema_does_not_expose_context() -> None:
 
     tools = await server.list_tools()
 
-    search_flights = next(
-        tool
-        for tool in tools
-        if tool.name == "search_flights"
-    )
+    search_flights = next(tool for tool in tools if tool.name == "search_flights")
 
     properties = search_flights.input_schema.get("properties", {})
 

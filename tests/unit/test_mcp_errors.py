@@ -35,9 +35,7 @@ async def test_boundary_translates_known_aviationstack_error() -> None:
     result = await operation()
 
     assert result.is_error is True
-    assert result.content[0].text == (
-        "The Aviationstack service is temporarily unavailable."
-    )
+    assert result.content[0].text == ("The Aviationstack service is temporarily unavailable.")
 
 
 @pytest.mark.asyncio

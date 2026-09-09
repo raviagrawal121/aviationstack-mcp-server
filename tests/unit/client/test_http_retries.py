@@ -34,9 +34,7 @@ async def test_retryable_status_is_retried(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     client = make_client(max_attempts=2)
-    request = AsyncMock(
-        side_effect=[httpx.Response(status_code), httpx.Response(200)]
-    )
+    request = AsyncMock(side_effect=[httpx.Response(status_code), httpx.Response(200)])
     sleep = AsyncMock()
     monkeypatch.setattr(client._client, "request", request)
     monkeypatch.setattr("aviationstack_mcp2.client.http.asyncio.sleep", sleep)
@@ -102,9 +100,7 @@ async def test_retry_attempts_are_total_attempts(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     client = make_client(max_attempts=3)
-    request = AsyncMock(
-        side_effect=[httpx.Response(503), httpx.Response(503), httpx.Response(503)]
-    )
+    request = AsyncMock(side_effect=[httpx.Response(503), httpx.Response(503), httpx.Response(503)])
     sleep = AsyncMock()
     monkeypatch.setattr(client._client, "request", request)
     monkeypatch.setattr("aviationstack_mcp2.client.http.asyncio.sleep", sleep)

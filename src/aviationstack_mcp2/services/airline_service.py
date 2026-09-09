@@ -27,11 +27,7 @@ class AirlineService:
             "search": query.search,
         }
 
-        params = {
-            key: value
-            for key, value in params.items()
-            if value is not None
-        }
+        params = {key: value for key, value in params.items() if value is not None}
 
         logger.info(
             "Searching airlines: limit=%s offset=%s search_provided=%s",
@@ -52,10 +48,6 @@ class AirlineService:
         )
 
         return response.data
-
-
-
-
 
 
 # from __future__ import annotations

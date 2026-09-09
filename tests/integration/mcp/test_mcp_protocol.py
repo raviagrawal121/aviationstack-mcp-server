@@ -1,4 +1,3 @@
-
 import pytest
 from mcp import Client
 
@@ -37,10 +36,7 @@ async def test_tools_list() -> None:
         result = await client.list_tools()
 
         # Extract tool names
-        tool_names = {
-            tool.name
-            for tool in result.tools
-        }
+        tool_names = {tool.name for tool in result.tools}
 
     # Assert
     expected_tools = {
@@ -58,6 +54,7 @@ async def test_tools_list() -> None:
     }
 
     assert expected_tools.issubset(tool_names)
+
 
 # @pytest.mark.asyncio
 # async def test_tools_list() -> None:
@@ -163,15 +160,12 @@ async def test_search_airports_schema() -> None:
     ) as client:
         result = await client.list_tools()
 
-        tool = next(
-            tool
-            for tool in result.tools
-            if tool.name == "search_airports"
-        )
+        tool = next(tool for tool in result.tools if tool.name == "search_airports")
 
     properties = tool.input_schema.get("properties", {})
 
     assert "query" in properties
+
 
 @pytest.mark.asyncio
 async def test_search_flights_schema() -> None:
@@ -185,15 +179,12 @@ async def test_search_flights_schema() -> None:
     ) as client:
         result = await client.list_tools()
 
-        tool = next(
-            tool
-            for tool in result.tools
-            if tool.name == "search_flights"
-        )
+        tool = next(tool for tool in result.tools if tool.name == "search_flights")
 
     properties = tool.input_schema.get("properties", {})
 
     assert "query" in properties
+
 
 @pytest.mark.asyncio
 async def test_context_is_not_exposed_in_tool_schema() -> None:
@@ -211,6 +202,7 @@ async def test_context_is_not_exposed_in_tool_schema() -> None:
         properties = tool.input_schema.get("properties", {})
 
         assert "ctx" not in properties
+
 
 @pytest.mark.asyncio
 async def test_search_airports_end_to_end() -> None:
@@ -249,9 +241,9 @@ async def test_search_airports_end_to_end() -> None:
     assert '"iata_code": "DEL"' in text
     assert '"icao_code": "VIDP"' in text
 
+
 @pytest.mark.asyncio
-async def test_search_airports_rejects_invalid_limit(
-) -> None:
+async def test_search_airports_rejects_invalid_limit() -> None:
     # Arrange
     server = create_server()
 
@@ -260,7 +252,6 @@ async def test_search_airports_rejects_invalid_limit(
         server,
         raise_exceptions=True,
     ) as client:
-
         result = await client.call_tool(
             "search_airports",
             arguments={
@@ -284,13 +275,13 @@ async def test_unknown_tool_fails() -> None:
         server,
         raise_exceptions=True,
     ) as client:
-
         result = await client.call_tool(
             "does_not_exist",
             arguments={},
         )
 
     assert result.is_error is True
+
 
 @pytest.mark.asyncio
 async def test_prompts_list() -> None:
@@ -302,14 +293,9 @@ async def test_prompts_list() -> None:
         server,
         raise_exceptions=True,
     ) as client:
-
-
         result = await client.list_prompts()
 
-    prompt_names = {
-        prompt.name
-        for prompt in result.prompts
-    }
+    prompt_names = {prompt.name for prompt in result.prompts}
 
     expected = {
         "plan_flight_search",
@@ -319,9 +305,9 @@ async def test_prompts_list() -> None:
 
     assert expected.issubset(prompt_names)
 
+
 @pytest.mark.asyncio
-async def test_plan_flight_search_prompt(
-) -> None:
+async def test_plan_flight_search_prompt() -> None:
     # Arrange
     server = create_server()
 
@@ -345,6 +331,7 @@ async def test_plan_flight_search_prompt(
     assert "Delhi" in prompt_text
     assert "Dubai" in prompt_text
 
+
 @pytest.mark.asyncio
 async def test_resources_list() -> None:
     # Arrange
@@ -357,10 +344,7 @@ async def test_resources_list() -> None:
     ) as client:
         result = await client.list_resources()
 
-    resource_uris = {
-        str(resource.uri)
-        for resource in result.resources
-    }
+    resource_uris = {str(resource.uri) for resource in result.resources}
 
     expected = {
         "aviationstack://metadata/server",
@@ -369,6 +353,7 @@ async def test_resources_list() -> None:
     }
 
     assert expected.issubset(resource_uris)
+
 
 @pytest.mark.asyncio
 async def test_server_metadata_resource() -> None:
@@ -402,6 +387,7 @@ async def test_tool_documentation_resource() -> None:
         )
 
     assert result.contents
+
 
 @pytest.mark.asyncio
 async def test_complete_mcp_surface() -> None:

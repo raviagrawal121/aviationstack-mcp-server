@@ -23,11 +23,7 @@ def redact_mapping(
     """Return a copy with sensitive values redacted."""
 
     return {
-        key: (
-            "***REDACTED***"
-            if key.lower() in SENSITIVE_KEYS
-            else value
-        )
+        key: ("***REDACTED***" if key.lower() in SENSITIVE_KEYS else value)
         for key, value in values.items()
     }
 
@@ -48,9 +44,7 @@ def validate_api_base_url(
 
     if environment == "production":
         if parsed.scheme != "https":
-            raise AviationstackConfigurationError(
-                "Production API base URL must use HTTPS."
-            )
+            raise AviationstackConfigurationError("Production API base URL must use HTTPS.")
 
         if parsed.hostname != "api.aviationstack.com":
             raise AviationstackConfigurationError(

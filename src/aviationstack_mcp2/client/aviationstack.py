@@ -83,8 +83,6 @@ class AviationstackClient:
 
         return f"{normalized_base_url}/{normalized_endpoint}"
 
-    
-
     @staticmethod
     def _parse_response(response: Any) -> dict[str, Any]:
         """Parse an Aviationstack JSON response."""
@@ -103,7 +101,7 @@ class AviationstackClient:
             raise AviationstackAPIError("Aviationstack returned an unexpected response format.")
 
         return payload
-    
+
     @staticmethod
     def _raise_for_api_error(
         payload: dict[str, Any],

@@ -9,10 +9,7 @@ async def test_resources_are_registered() -> None:
 
     resources = await server.list_resources()
 
-    resource_uris = {
-        str(resource.uri)
-        for resource in resources
-    }
+    resource_uris = {str(resource.uri) for resource in resources}
 
     expected_resources = {
         "aviationstack://metadata/server",
@@ -33,6 +30,7 @@ async def test_server_metadata_resource() -> None:
 
     assert contents
 
+
 @pytest.mark.asyncio
 async def test_server_metadata_contains_project_name() -> None:
     server = create_server()
@@ -41,16 +39,13 @@ async def test_server_metadata_contains_project_name() -> None:
         "aviationstack://metadata/server",
     )
 
-    text = "\n".join(
-        content.content
-        for content in contents
-        if isinstance(content.content, str)
-    )
+    text = "\n".join(content.content for content in contents if isinstance(content.content, str))
 
     assert "aviationstack_mcp2" in text
     assert "AVIATIONSTACK_API_KEY" not in text
     assert "access_key" not in text
     assert "super-secret" not in text
+
 
 @pytest.mark.asyncio
 async def test_endpoint_documentation_resource() -> None:
@@ -62,14 +57,11 @@ async def test_endpoint_documentation_resource() -> None:
 
     assert contents
 
-    text = "\n".join(
-        content.content
-        for content in contents
-        if isinstance(content.content, str)
-    )
+    text = "\n".join(content.content for content in contents if isinstance(content.content, str))
 
     assert "AVIATIONSTACK_API_KEY" not in text
     assert "access_key" not in text
+
 
 @pytest.mark.asyncio
 async def test_tool_documentation_resource() -> None:
@@ -81,11 +73,7 @@ async def test_tool_documentation_resource() -> None:
 
     assert contents
 
-    text = "\n".join(
-        content.content
-        for content in contents
-        if isinstance(content.content, str)
-    )
+    text = "\n".join(content.content for content in contents if isinstance(content.content, str))
 
     assert "AVIATIONSTACK_API_KEY" not in text
     assert "access_key" not in text

@@ -48,10 +48,7 @@ async def test_rate_limit_error_is_safe_at_mcp_boundary() -> None:
             },
         )
 
-    result_text = "\n".join(
-        getattr(item, "text", "")
-        for item in result.content
-    )
+    result_text = "\n".join(getattr(item, "text", "") for item in result.content)
     serialized_result = str(result)
 
     assert result.is_error is True

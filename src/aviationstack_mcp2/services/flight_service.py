@@ -44,11 +44,7 @@ class FlightService:
             "arr_iata": query.arrival_iata,
         }
 
-        params = {
-            key: value
-            for key, value in params.items()
-            if value is not None
-        }
+        params = {key: value for key, value in params.items() if value is not None}
 
         logger.info(
             "Searching live flights: limit=%s filters=%s",
@@ -80,11 +76,7 @@ class FlightService:
             "limit": query.limit,
         }
 
-        params = {
-            key: value
-            for key, value in params.items()
-            if value is not None
-        }
+        params = {key: value for key, value in params.items() if value is not None}
 
         logger.info(
             "Searching historical flights: date=%s limit=%s filters=%s",
@@ -118,11 +110,7 @@ class FlightService:
             "airline_name": query.airline_name,
         }
 
-        params = {
-            key: value
-            for key, value in params.items()
-            if value is not None
-        }
+        params = {key: value for key, value in params.items() if value is not None}
 
         logger.info(
             "Getting airport schedule: airport=%s type=%s airline_filter=%s",
@@ -159,11 +147,7 @@ class FlightService:
             "airline_iata": query.airline_iata,
         }
 
-        params = {
-            key: value
-            for key, value in params.items()
-            if value is not None
-        }
+        params = {key: value for key, value in params.items() if value is not None}
 
         logger.info(
             "Getting future schedule: airport=%s date=%s type=%s airline_filter=%s",
@@ -232,7 +216,7 @@ class FlightService:
 #     def __init__(self, client: AviationstackClient) -> None:
 #         self._client = client
 
-#     async def search_flights(        
+#     async def search_flights(
 #         self,
 #         query: FlightSearchQuery,
 #     ) -> list[Flight]:
@@ -323,7 +307,6 @@ class FlightService:
 #             query.limit,
 #         )
 
-    
 
 #     async def get_future_schedule(
 #         self,
