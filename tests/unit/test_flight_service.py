@@ -70,17 +70,11 @@ async def test_search_flights_returns_typed_flights() -> None:
 
 @pytest.mark.asyncio
 async def test_invalid_schedule_type_is_rejected() -> None:
-    client = AsyncMock()
-
-    service = FlightService(client)
-
     with pytest.raises(ValueError, match="schedule_type"):
         AirportScheduleQuery(
             airport_iata="JFK",
             schedule_type="invalid",
         )
-
-    client.get.assert_not_awaited()
 
 
 

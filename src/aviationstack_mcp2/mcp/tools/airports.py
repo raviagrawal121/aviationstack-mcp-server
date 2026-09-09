@@ -3,6 +3,7 @@ import logging
 from mcp.server.mcpserver import Context
 
 from aviationstack_mcp2.mcp.dependencies import AppContext
+from aviationstack_mcp2.mcp.errors import mcp_error_boundary
 from aviationstack_mcp2.models.queries import AirportSearchQuery
 
 logger = logging.getLogger(__name__)
@@ -19,6 +20,7 @@ def register_airport_tools(server) -> None:
             "city, or other supported airport search criteria."
         ),
     )
+    @mcp_error_boundary
     async def search_airports(
         query: AirportSearchQuery,
         ctx: Context[AppContext],

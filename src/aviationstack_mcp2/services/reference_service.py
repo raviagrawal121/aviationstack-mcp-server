@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 import random
+from typing import TypeVar
 
 from aviationstack_mcp2.client import AviationstackClient
 from aviationstack_mcp2.models import (
@@ -21,6 +22,7 @@ from aviationstack_mcp2.models.queries import (
 )
 
 logger = logging.getLogger(__name__)
+T = TypeVar("T")
 
 
 class ReferenceDataService:
@@ -146,7 +148,7 @@ class ReferenceDataService:
         return response.data
 
     @staticmethod
-    def _sample_records[T](
+    def _sample_records(
         records: list[T],
         requested_count: int,
     ) -> list[T]:
