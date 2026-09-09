@@ -48,6 +48,9 @@ async def test_server_metadata_contains_project_name() -> None:
     )
 
     assert "aviationstack_mcp2" in text
+    assert "AVIATIONSTACK_API_KEY" not in text
+    assert "access_key" not in text
+    assert "super-secret" not in text
 
 @pytest.mark.asyncio
 async def test_endpoint_documentation_resource() -> None:
@@ -59,6 +62,15 @@ async def test_endpoint_documentation_resource() -> None:
 
     assert contents
 
+    text = "\n".join(
+        content.content
+        for content in contents
+        if isinstance(content.content, str)
+    )
+
+    assert "AVIATIONSTACK_API_KEY" not in text
+    assert "access_key" not in text
+
 @pytest.mark.asyncio
 async def test_tool_documentation_resource() -> None:
     server = create_server()
@@ -68,3 +80,12 @@ async def test_tool_documentation_resource() -> None:
     )
 
     assert contents
+
+    text = "\n".join(
+        content.content
+        for content in contents
+        if isinstance(content.content, str)
+    )
+
+    assert "AVIATIONSTACK_API_KEY" not in text
+    assert "access_key" not in text

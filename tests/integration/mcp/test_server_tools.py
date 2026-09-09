@@ -25,4 +25,4 @@ async def test_registered_tools() -> None:
         "search_taxes",
     }
 
-    assert expected_tools.issubset(tool_names)
+    assert tool_names == expected_tools
