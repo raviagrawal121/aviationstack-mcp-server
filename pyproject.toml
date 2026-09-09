@@ -10,6 +10,7 @@ authors = [
 ]
 
 license = "MIT"
+license-files = ["LICENSE"]
 
 keywords = [
     "mcp",
@@ -24,7 +25,6 @@ keywords = [
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.13",
@@ -41,6 +41,12 @@ dependencies = [
 
 [project.scripts]
 aviationstack-mcp-server = "aviationstack_mcp_server.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/raviagrawal121/aviationstack-mcp-server"
+Repository = "https://github.com/raviagrawal121/aviationstack-mcp-server"
+Issues = "https://github.com/raviagrawal121/aviationstack-mcp-server/issues"
+Changelog = "https://github.com/raviagrawal121/aviationstack-mcp-server/blob/main/CHANGELOG.md"
 
 [build-system]
 requires = ["uv_build>=0.12.10,<0.13.0"]
