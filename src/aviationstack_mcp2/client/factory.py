@@ -18,8 +18,8 @@ def create_aviationstack_client(
         settings.aviationstack_base_url,
         settings.aviationstack_connect_timeout,
         settings.aviationstack_read_timeout,
-        settings.aviationstack_max_retries,
-        settings.aviationstack_retry_backoff,
+        settings.aviationstack_retry_max_attempts,
+        settings.aviationstack_retry_backoff_factor,
     )
 
     http_client = HTTPClient(settings)

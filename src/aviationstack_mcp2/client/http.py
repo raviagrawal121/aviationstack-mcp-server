@@ -1,16 +1,12 @@
 from __future__ import annotations
 
+import asyncio
 import logging
+import random
 from collections.abc import Mapping
 from typing import Any
 
 import httpx
-from tenacity import (
-    AsyncRetrying,
-    retry_if_exception_type,
-    stop_after_attempt,
-    wait_exponential,
-)
 
 from aviationstack_mcp2.config import Settings
 from aviationstack_mcp2.errors import (
@@ -24,6 +20,15 @@ from aviationstack_mcp2.errors import (
 )
 
 logger = logging.getLogger(__name__)
+
+MAX_RETRY_DELAY = 30.0
+RETRYABLE_STATUS_CODES = frozenset({408, 429, 500, 502, 503, 504})
+
+
+def is_retryable_status(status_code: int) -> bool:
+    """Return whether an HTTP status represents a transient failure."""
+
+    return status_code in RETRYABLE_STATUS_CODES
 
 
 class HTTPClient:
@@ -58,84 +63,145 @@ class HTTPClient:
     ) -> httpx.Response:
         """Execute an HTTP request with retry handling."""
 
-        retryable_exceptions = (
-            httpx.ConnectError,
-            httpx.ReadError,
-            httpx.WriteError,
-            httpx.RemoteProtocolError,
-        )
+        max_attempts = self._settings.aviationstack_retry_max_attempts
 
-        retryer = AsyncRetrying(
-            stop=stop_after_attempt(self._settings.aviationstack_max_retries + 1),
-            wait=wait_exponential(
-                multiplier=self._settings.aviationstack_retry_backoff,
-                min=0.5,
-                max=8,
-            ),
-            retry=retry_if_exception_type(retryable_exceptions),
-            reraise=True,
-        )
+        for attempt_number in range(1, max_attempts + 1):
+            logger.debug(
+                "Sending HTTP request: method=%s url=%s attempt=%s params=%s",
+                method,
+                url,
+                attempt_number,
+                sorted(params) if params else [],
+            )
 
-        try:
-            async for attempt in retryer:
-                with attempt:
-                    attempt_number = attempt.retry_state.attempt_number
-                    logger.debug(
-                        "Sending HTTP request: method=%s url=%s attempt=%s params=%s",
+            try:
+                response = await self._client.request(
+                    method=method,
+                    url=url,
+                    params=params,
+                    headers=headers,
+                )
+            except httpx.TimeoutException as exc:
+                if attempt_number >= max_attempts:
+                    logger.error(
+                        "HTTP request failed after %s attempts: method=%s url=%s",
+                        max_attempts,
                         method,
                         url,
-                        attempt_number,
-                        sorted(params) if params else [],
                     )
+                    raise AviationstackTimeoutError(
+                        "Aviationstack request timed out."
+                    ) from exc
 
-                    try:
-                        response = await self._client.request(
-                            method=method,
-                            url=url,
-                            params=params,
-                            headers=headers,
-                        )
-                    except retryable_exceptions as exc:
-                        logger.warning(
-                            "Retryable HTTP request failure: method=%s url=%s "
-                            "attempt=%s error=%s",
-                            method,
-                            url,
-                            attempt_number,
-                            exc,
-                        )
-                        raise
+                await self._sleep_before_retry(
+                    attempt_number,
+                    method=method,
+                    url=url,
+                )
+                continue
+            except httpx.RequestError as exc:
+                if attempt_number >= max_attempts:
+                    logger.error(
+                        "HTTP request failed after %s attempts: method=%s url=%s",
+                        max_attempts,
+                        method,
+                        url,
+                    )
+                    raise AviationstackRequestError(
+                        "Unable to reach the Aviationstack API."
+                    ) from exc
 
-                    self._raise_for_status(response)
+                await self._sleep_before_retry(
+                    attempt_number,
+                    method=method,
+                    url=url,
+                )
+                continue
 
-                    logger.debug(
-                        "Received HTTP response: method=%s url=%s status=%s attempt=%s",
+            if is_retryable_status(response.status_code):
+                if attempt_number >= max_attempts:
+                    logger.error(
+                        "HTTP request failed after %s attempts: method=%s url=%s "
+                        "status=%s",
+                        max_attempts,
                         method,
                         url,
                         response.status_code,
-                        attempt_number,
                     )
-                    return response
+                    self._raise_for_status(response)
 
-        except httpx.TimeoutException as exc:
-            logger.warning(
-                "HTTP request timed out: method=%s url=%s error=%s",
+                await self._sleep_before_retry(
+                    attempt_number,
+                    method=method,
+                    url=url,
+                    response=response,
+                )
+                continue
+
+            self._raise_for_status(response)
+
+            logger.debug(
+                "Received HTTP response: method=%s url=%s status=%s attempt=%s",
                 method,
                 url,
-                exc,
+                response.status_code,
+                attempt_number,
             )
-            raise AviationstackTimeoutError("Aviationstack request timed out.") from exc
-
-        except httpx.RequestError as exc:
-            logger.warning(
-                "HTTP request failed: method=%s url=%s error=%s",
-                method,
-                url,
-                exc,
-            )
-            raise AviationstackRequestError(f"Aviationstack request failed: {exc}") from exc
+            return response
 
         raise AviationstackRequestError("Aviationstack request failed unexpectedly.")
+
+    async def _sleep_before_retry(
+        self,
+        attempt_number: int,
+        *,
+        method: str,
+        url: str,
+        response: httpx.Response | None = None,
+    ) -> None:
+        """Wait before a retry using Retry-After or capped jittered backoff."""
+
+        retry_after = self._retry_after_seconds(response)
+        if retry_after is not None:
+            delay = min(retry_after, MAX_RETRY_DELAY)
+            retry_after_detail = f" retry_after={delay}"
+        else:
+            base_delay = min(
+                self._settings.aviationstack_retry_backoff_factor
+                * (2 ** (attempt_number - 1)),
+                MAX_RETRY_DELAY,
+            )
+            jitter = random.uniform(0, base_delay * 0.1)
+            delay = min(base_delay + jitter, MAX_RETRY_DELAY)
+            retry_after_detail = ""
+
+        logger.warning(
+            "Retrying HTTP request: method=%s url=%s attempt=%s delay=%.3f%s",
+            method,
+            url,
+            attempt_number + 1,
+            delay,
+            retry_after_detail,
+        )
+        await asyncio.sleep(delay)
+
+    @staticmethod
+    def _retry_after_seconds(response: httpx.Response | None) -> float | None:
+        """Parse a non-negative numeric Retry-After header, if present."""
+
+        if response is None:
+            return None
+
+        retry_after = response.headers.get("Retry-After")
+        if retry_after is None:
+            return None
+
+        try:
+            delay = float(retry_after)
+        except ValueError:
+            return None
+
+        return delay if delay >= 0 else None
 
     async def close(self) -> None:
         """Close the underlying HTTP client."""

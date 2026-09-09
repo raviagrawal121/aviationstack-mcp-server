@@ -178,20 +178,19 @@ def test_negative_http_timeout_rejected(field_name: str) -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_zero_retries_is_allowed() -> None:
-    settings = Settings(
-        aviationstack_api_key="test-key",
-        aviationstack_max_retries=0,
-    )
-
-    assert settings.aviationstack_max_retries == 0
+def test_zero_retry_attempts_is_rejected() -> None:
+    with pytest.raises(ValidationError):
+        Settings(
+            aviationstack_api_key="test-key",
+            aviationstack_retry_max_attempts=0,
+        )
 
 
 def test_retry_attempts_above_maximum_rejected() -> None:
     with pytest.raises(ValidationError):
         Settings(
             aviationstack_api_key="test-key",
-            aviationstack_max_retries=11,
+            aviationstack_retry_max_attempts=11,
         )
 
 
@@ -199,7 +198,7 @@ def test_negative_retry_attempts_rejected() -> None:
     with pytest.raises(ValidationError):
         Settings(
             aviationstack_api_key="test-key",
-            aviationstack_max_retries=-1,
+            aviationstack_retry_max_attempts=-1,
         )
 
 
@@ -207,14 +206,14 @@ def test_retry_backoff_cannot_be_negative() -> None:
     with pytest.raises(ValidationError):
         Settings(
             aviationstack_api_key="test-key",
-            aviationstack_retry_backoff=-1,
+            aviationstack_retry_backoff_factor=-1,
         )
 
 
 def test_zero_retry_backoff_is_allowed() -> None:
     settings = Settings(
         aviationstack_api_key="test-key",
-        aviationstack_retry_backoff=0,
+        aviationstack_retry_backoff_factor=0,
     )
 
-    assert settings.aviationstack_retry_backoff == 0
+    assert settings.aviationstack_retry_backoff_factor == 0

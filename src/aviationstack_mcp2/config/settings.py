@@ -84,13 +84,13 @@ class Settings(BaseSettings):
     # Retry configuration
     # ------------------------------------------------------------------
 
-    aviationstack_max_retries: int = Field(
+    aviationstack_retry_max_attempts: int = Field(
         default=3,
-        ge=0,
+        ge=1,
         le=10,
     )
 
-    aviationstack_retry_backoff: float = Field(
+    aviationstack_retry_backoff_factor: float = Field(
         default=0.5,
         ge=0,
     )
@@ -138,8 +138,8 @@ def get_settings() -> Settings:
         settings.aviationstack_base_url,
         settings.aviationstack_connect_timeout,
         settings.aviationstack_read_timeout,
-        settings.aviationstack_max_retries,
-        settings.aviationstack_retry_backoff,
+        settings.aviationstack_retry_max_attempts,
+        settings.aviationstack_retry_backoff_factor,
     )
 
     return settings
