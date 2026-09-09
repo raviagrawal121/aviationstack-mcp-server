@@ -1,8 +1,12 @@
 from __future__ import annotations
 
+import logging
+
 from aviationstack_mcp2.client import AviationstackClient
 from aviationstack_mcp2.models import Airport, AirportResponse
 from aviationstack_mcp2.models.queries import AirportSearchQuery
+
+logger = logging.getLogger(__name__)
 
 
 class AirportService:
@@ -29,12 +33,23 @@ class AirportService:
             if value is not None
         }
 
+        logger.info(
+            "Searching airports: limit=%s offset=%s search_provided=%s",
+            query.limit,
+            query.offset,
+            query.search is not None,
+        )
+
         payload = await self._client.get(
             "airports",
             params=params,
         )
 
         response = AirportResponse.model_validate(payload)
+        logger.debug(
+            "Airport search complete: fetched=%s",
+            len(response.data),
+        )
 
         return response.data
 

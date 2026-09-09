@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from collections.abc import Mapping
 from typing import Any
 
@@ -8,6 +9,8 @@ from aviationstack_mcp2.config import Settings
 from aviationstack_mcp2.errors import (
     AviationstackAPIError,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class AviationstackClient:
@@ -40,10 +43,24 @@ class AviationstackClient:
                 {key: value for key, value in params.items() if value is not None}
             )
 
+        logger.debug(
+            "Sending Aviationstack request: method=%s endpoint=%s params=%s",
+            "GET",
+            endpoint,
+            sorted(key for key in request_params if key != "access_key"),
+        )
+
         response = await self._http_client.request(
             "GET",
             url,
             params=request_params,
+        )
+
+        logger.debug(
+            "Received Aviationstack response: method=%s endpoint=%s status=%s",
+            "GET",
+            endpoint,
+            response.status_code,
         )
 
         payload = self._parse_response(response)
@@ -53,8 +70,8 @@ class AviationstackClient:
         return payload
 
     async def close(self) -> None:
+        logger.debug("Closing Aviationstack HTTP client")
         await self._http_client.close()
-
 
     def _build_url(self, endpoint: str) -> str:
         """Build an endpoint URL safely."""
@@ -73,9 +90,14 @@ class AviationstackClient:
         try:
             payload = response.json()
         except ValueError as exc:
+            logger.warning("Aviationstack returned invalid JSON")
             raise AviationstackAPIError("Aviationstack returned an invalid JSON response.") from exc
 
         if not isinstance(payload, dict):
+            logger.warning(
+                "Aviationstack returned an unexpected response type: %s",
+                type(payload).__name__,
+            )
             raise AviationstackAPIError("Aviationstack returned an unexpected response format.")
 
         return payload
@@ -103,6 +125,13 @@ class AviationstackClient:
 
         if not isinstance(message, str):
             message = "Aviationstack returned an API error."
+
+        logger.warning(
+            "Aviationstack API error: type=%s code=%s message=%s",
+            error_type,
+            error_code,
+            message,
+        )
 
         raise AviationstackAPIError(
             f"{error_type}: {message}",

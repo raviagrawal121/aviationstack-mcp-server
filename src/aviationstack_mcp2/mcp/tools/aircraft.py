@@ -1,7 +1,11 @@
+import logging
+
 from mcp.server.mcpserver import Context
 
 from aviationstack_mcp2.mcp.dependencies import AppContext
 from aviationstack_mcp2.models.queries import RecordLimitQuery
+
+logger = logging.getLogger(__name__)
 
 
 def register_aircraft_tools(server) -> None:
@@ -22,8 +26,14 @@ def register_aircraft_tools(server) -> None:
         """List aircraft type records."""
 
         app = ctx.request_context.lifespan_context
+        logger.info("MCP tool called: list_aircraft_types limit=%s", query.limit)
+        records = await app.services.aircraft.list_aircraft_types(query)
+        logger.debug(
+            "MCP tool completed: list_aircraft_types returned=%s",
+            len(records),
+        )
 
-        return await app.services.aircraft.list_aircraft_types(query)
+        return records
 
     @server.tool(
         name="list_airplanes",
@@ -41,5 +51,11 @@ def register_aircraft_tools(server) -> None:
         """List individual airplane records."""
 
         app = ctx.request_context.lifespan_context
+        logger.info("MCP tool called: list_airplanes limit=%s", query.limit)
+        records = await app.services.aircraft.list_airplanes(query)
+        logger.debug(
+            "MCP tool completed: list_airplanes returned=%s",
+            len(records),
+        )
 
-        return await app.services.aircraft.list_airplanes(query)
+        return records

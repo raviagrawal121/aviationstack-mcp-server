@@ -1,11 +1,13 @@
+import logging
 from enum import StrEnum
 from functools import lru_cache
 
-from pydantic import Field, SecretStr, field_validator
+from pydantic import AnyHttpUrl, Field, SecretStr, TypeAdapter, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import AnyHttpUrl, TypeAdapter
 
 _http_url_adapter = TypeAdapter(AnyHttpUrl)
+
+logger = logging.getLogger(__name__)
 
 
 
@@ -126,4 +128,18 @@ class Settings(BaseSettings):
 def get_settings() -> Settings:
     """Return the cached application settings."""
 
-    return Settings()
+    settings = Settings()
+    logger.debug(
+        "Loaded Aviationstack settings: environment=%s log_level=%s "
+        "base_url=%s connect_timeout=%s read_timeout=%s max_retries=%s "
+        "retry_backoff=%s",
+        settings.environment,
+        settings.log_level,
+        settings.aviationstack_base_url,
+        settings.aviationstack_connect_timeout,
+        settings.aviationstack_read_timeout,
+        settings.aviationstack_max_retries,
+        settings.aviationstack_retry_backoff,
+    )
+
+    return settings

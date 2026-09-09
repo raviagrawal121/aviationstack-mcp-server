@@ -1,7 +1,11 @@
+import logging
+
 from mcp.server.mcpserver import Context
 
 from aviationstack_mcp2.mcp.dependencies import AppContext
 from aviationstack_mcp2.models.queries import AirportSearchQuery
+
+logger = logging.getLogger(__name__)
 
 
 def register_airport_tools(server) -> None:
@@ -22,5 +26,16 @@ def register_airport_tools(server) -> None:
         """Search airport records."""
 
         app = ctx.request_context.lifespan_context
+        logger.info(
+            "MCP tool called: search_airports limit=%s offset=%s search_provided=%s",
+            query.limit,
+            query.offset,
+            query.search is not None,
+        )
+        records = await app.services.airport.search_airports(query)
+        logger.debug(
+            "MCP tool completed: search_airports returned=%s",
+            len(records),
+        )
 
-        return await app.services.airport.search_airports(query)
+        return records

@@ -1,3 +1,4 @@
+import logging
 from collections.abc import AsyncIterator, Callable
 from contextlib import asynccontextmanager
 
@@ -25,6 +26,8 @@ from aviationstack_mcp2.mcp.tools.airports import register_airport_tools
 from aviationstack_mcp2.mcp.tools.flights import register_flight_tools
 from aviationstack_mcp2.mcp.tools.reference import register_reference_tools
 
+logger = logging.getLogger(__name__)
+
 ClientFactory = Callable[[], AviationstackClient]
 
 
@@ -44,12 +47,25 @@ def create_lifespan(
     async def lifespan(
         server: MCPServer[AppContext],
     ) -> AsyncIterator[AppContext]:
+        logger.info("Starting Aviationstack MCP application lifespan")
         client = client_factory()
 
         try:
-            yield build_app_context(client)
+            logger.info("Aviationstack API client initialized")
+
+            app_context = build_app_context(client)
+            logger.info("Aviationstack application context ready")
+
+            yield app_context
         finally:
-            await client.close()
+            logger.info("Shutting down Aviationstack MCP application lifespan")
+            try:
+                await client.close()
+            except Exception:
+                logger.exception("Failed to close Aviationstack API client")
+                raise
+            else:
+                logger.info("Aviationstack API client closed")
 
     return lifespan
 
@@ -59,6 +75,7 @@ def create_server(
 ) -> MCPServer[AppContext]:
     """Create and configure the Aviationstack MCP server."""
 
+    logger.debug("Creating Aviationstack MCP server")
     server = MCPServer(
         "aviationstack-mcp",
         lifespan=create_lifespan(client_factory),
@@ -78,6 +95,7 @@ def create_server(
     register_metadata_resources(server)
     register_documentation_resources(server)
 
+    logger.info("Aviationstack MCP server configured")
     return server
 
 

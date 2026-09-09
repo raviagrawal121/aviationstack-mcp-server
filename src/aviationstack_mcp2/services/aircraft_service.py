@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import random
 
 from aviationstack_mcp2.client import AviationstackClient
@@ -10,6 +11,8 @@ from aviationstack_mcp2.models import (
     AirplaneResponse,
 )
 from aviationstack_mcp2.models.queries import RecordLimitQuery
+
+logger = logging.getLogger(__name__)
 
 
 class AircraftService:
@@ -24,17 +27,22 @@ class AircraftService:
     ) -> list[AircraftType]:
         """Retrieve aircraft type reference data."""
 
+        logger.info("Listing aircraft types: requested_limit=%s", query.limit)
         payload = await self._client.get(
             "aircraft_types",
             params={"limit": query.limit},
         )
 
         response = AircraftTypeResponse.model_validate(payload)
+        records = self._sample_records(response.data, query.limit)
 
-        return self._sample_records(
-            response.data,
-            query.limit,
+        logger.debug(
+            "Aircraft type listing complete: fetched=%s returned=%s",
+            len(response.data),
+            len(records),
         )
+
+        return records
 
     async def list_airplanes(
         self,
@@ -42,17 +50,22 @@ class AircraftService:
     ) -> list[Airplane]:
         """Retrieve airplane reference data."""
 
+        logger.info("Listing airplanes: requested_limit=%s", query.limit)
         payload = await self._client.get(
             "airplanes",
             params={"limit": query.limit},
         )
 
         response = AirplaneResponse.model_validate(payload)
+        records = self._sample_records(response.data, query.limit)
 
-        return self._sample_records(
-            response.data,
-            query.limit,
+        logger.debug(
+            "Airplane listing complete: fetched=%s returned=%s",
+            len(response.data),
+            len(records),
         )
+
+        return records
 
     @staticmethod
     def _sample_records[T](

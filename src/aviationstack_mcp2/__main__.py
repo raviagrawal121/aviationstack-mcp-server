@@ -1,7 +1,12 @@
+from aviationstack_mcp2.config import get_settings
+from aviationstack_mcp2.logging_config import configure_logging
 from aviationstack_mcp2.mcp.server import create_server
 
 
 def main() -> None:
+    settings = get_settings()
+    configure_logging(settings.log_level)
+
     server = create_server()
     server.run()
 

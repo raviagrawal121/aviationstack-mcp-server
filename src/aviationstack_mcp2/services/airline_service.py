@@ -1,8 +1,12 @@
 from __future__ import annotations
 
+import logging
+
 from aviationstack_mcp2.client import AviationstackClient
 from aviationstack_mcp2.models import Airline, AirlineResponse
 from aviationstack_mcp2.models.queries import AirlineSearchQuery
+
+logger = logging.getLogger(__name__)
 
 
 class AirlineService:
@@ -29,14 +33,30 @@ class AirlineService:
             if value is not None
         }
 
+        logger.info(
+            "Searching airlines: limit=%s offset=%s search_provided=%s",
+            query.limit,
+            query.offset,
+            query.search is not None,
+        )
+
         payload = await self._client.get(
             "airlines",
             params=params,
         )
 
         response = AirlineResponse.model_validate(payload)
+        logger.debug(
+            "Airline search complete: fetched=%s",
+            len(response.data),
+        )
 
         return response.data
+
+
+
+
+
 
 # from __future__ import annotations
 

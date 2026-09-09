@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from aviationstack_mcp2.config import Environment, Settings
+from aviationstack_mcp2.config.settings import Environment, Settings
 
 # ---------------------------------------------------------------------------
 # Basic configuration

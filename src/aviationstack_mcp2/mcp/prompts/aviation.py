@@ -1,8 +1,14 @@
+import logging
+
 from mcp.server.mcpserver import MCPServer
+
+logger = logging.getLogger(__name__)
 
 
 def register_aviation_prompts(server: MCPServer) -> None:
     """Register Aviationstack MCP prompts."""
+
+    logger.debug("Registering Aviationstack MCP prompts")
 
     @server.prompt(
         name="plan_flight_search",
@@ -17,7 +23,7 @@ def register_aviation_prompts(server: MCPServer) -> None:
     ) -> str:
         """Generate guidance for searching flights."""
 
-        return (
+        prompt = (
             "Plan a flight search using the Aviationstack MCP server.\n\n"
             f"User request:\n{request}\n\n"
             "Determine the relevant flight filters such as airline, "
@@ -25,6 +31,12 @@ def register_aviation_prompts(server: MCPServer) -> None:
             "and date. Then use the search_flights tool with the "
             "appropriate structured query."
         )
+        logger.debug(
+            "Generated prompt: plan_flight_search request_length=%s prompt_length=%s",
+            len(request),
+            len(prompt),
+        )
+        return prompt
 
     @server.prompt(
         name="plan_schedule_search",
@@ -40,7 +52,7 @@ def register_aviation_prompts(server: MCPServer) -> None:
     ) -> str:
         """Generate guidance for an airport schedule search."""
 
-        return (
+        prompt = (
             "Plan an Aviationstack airport schedule lookup.\n\n"
             f"Airport: {airport}\n"
             f"Schedule type: {schedule_type}\n\n"
@@ -49,6 +61,14 @@ def register_aviation_prompts(server: MCPServer) -> None:
             "corresponding structured query fields. Return the "
             "schedule information relevant to the user's request."
         )
+        logger.debug(
+            "Generated prompt: plan_schedule_search airport=%s schedule_type=%s "
+            "prompt_length=%s",
+            airport,
+            schedule_type,
+            len(prompt),
+        )
+        return prompt
 
     @server.prompt(
         name="plan_reference_data_search",
@@ -63,7 +83,7 @@ def register_aviation_prompts(server: MCPServer) -> None:
     ) -> str:
         """Generate guidance for reference-data lookup."""
 
-        return (
+        prompt = (
             "Plan a reference-data lookup using the "
             "Aviationstack MCP server.\n\n"
             f"User request:\n{request}\n\n"
@@ -76,3 +96,10 @@ def register_aviation_prompts(server: MCPServer) -> None:
             "- list_airplanes for individual airplane records\n\n"
             "Use the selected tool with its structured query."
         )
+        logger.debug(
+            "Generated prompt: plan_reference_data_search request_length=%s "
+            "prompt_length=%s",
+            len(request),
+            len(prompt),
+        )
+        return prompt

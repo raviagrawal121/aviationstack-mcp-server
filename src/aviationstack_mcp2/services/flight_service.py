@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import random
 
 from aviationstack_mcp2.client import AviationstackClient
@@ -15,6 +16,8 @@ from aviationstack_mcp2.models.queries import (
     FutureScheduleQuery,
     HistoricalFlightQuery,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class FlightService:
@@ -45,12 +48,19 @@ class FlightService:
             if value is not None
         }
 
+        logger.info(
+            "Searching live flights: limit=%s filters=%s",
+            query.limit,
+            sorted(key for key in params if key != "limit"),
+        )
+
         payload = await self._client.get(
             "flights",
             params=params,
         )
 
         response = FlightResponse.model_validate(payload)
+        logger.debug("Live flight search complete: fetched=%s", len(response.data))
 
         return response.data
 
@@ -74,12 +84,23 @@ class FlightService:
             if value is not None
         }
 
+        logger.info(
+            "Searching historical flights: date=%s limit=%s filters=%s",
+            query.flight_date,
+            query.limit,
+            sorted(key for key in params if key not in {"flight_date", "limit"}),
+        )
+
         payload = await self._client.get(
             "flights",
             params=params,
         )
 
         response = FlightResponse.model_validate(payload)
+        logger.debug(
+            "Historical flight search complete: fetched=%s",
+            len(response.data),
+        )
 
         return response.data
 
@@ -101,17 +122,27 @@ class FlightService:
             if value is not None
         }
 
+        logger.info(
+            "Getting airport schedule: airport=%s type=%s airline_filter=%s",
+            query.airport_iata,
+            query.schedule_type.value,
+            query.airline_name is not None,
+        )
+
         payload = await self._client.get(
             "timetable",
             params=params,
         )
 
         response = ScheduleResponse.model_validate(payload)
-
-        return self._sample_records(
-            response.data,
-            query.limit,
+        records = self._sample_records(response.data, query.limit)
+        logger.debug(
+            "Airport schedule retrieval complete: fetched=%s returned=%s",
+            len(response.data),
+            len(records),
         )
+
+        return records
 
     async def get_future_schedule(
         self,
@@ -132,17 +163,28 @@ class FlightService:
             if value is not None
         }
 
+        logger.info(
+            "Getting future schedule: airport=%s date=%s type=%s airline_filter=%s",
+            query.airport_iata,
+            query.date,
+            query.schedule_type.value,
+            query.airline_iata is not None,
+        )
+
         payload = await self._client.get(
             "flightsFuture",
             params=params,
         )
 
         response = ScheduleResponse.model_validate(payload)
-
-        return self._sample_records(
-            response.data,
-            query.limit,
+        records = self._sample_records(response.data, query.limit)
+        logger.debug(
+            "Future schedule retrieval complete: fetched=%s returned=%s",
+            len(response.data),
+            len(records),
         )
+
+        return records
 
     @staticmethod
     def _sample_records[T](

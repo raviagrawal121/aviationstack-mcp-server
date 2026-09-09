@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import random
 
 from aviationstack_mcp2.client import AviationstackClient
@@ -19,6 +20,8 @@ from aviationstack_mcp2.models.queries import (
     TaxSearchQuery,
 )
 
+logger = logging.getLogger(__name__)
+
 
 class ReferenceDataService:
     """Application service for Aviationstack reference data."""
@@ -32,17 +35,21 @@ class ReferenceDataService:
     ) -> list[Country]:
         """Retrieve country reference data."""
 
+        logger.info("Listing countries: requested_limit=%s", query.limit)
         payload = await self._client.get(
             "countries",
             params={"limit": query.limit},
         )
 
         response = CountryResponse.model_validate(payload)
-
-        return self._sample_records(
-            response.data,
-            query.limit,
+        records = self._sample_records(response.data, query.limit)
+        logger.debug(
+            "Country listing complete: fetched=%s returned=%s",
+            len(response.data),
+            len(records),
         )
+
+        return records
 
     async def list_cities(
         self,
@@ -50,17 +57,21 @@ class ReferenceDataService:
     ) -> list[City]:
         """Retrieve city reference data."""
 
+        logger.info("Listing cities: requested_limit=%s", query.limit)
         payload = await self._client.get(
             "cities",
             params={"limit": query.limit},
         )
 
         response = CityResponse.model_validate(payload)
-
-        return self._sample_records(
-            response.data,
-            query.limit,
+        records = self._sample_records(response.data, query.limit)
+        logger.debug(
+            "City listing complete: fetched=%s returned=%s",
+            len(response.data),
+            len(records),
         )
+
+        return records
 
     async def search_routes(
         self,
@@ -82,12 +93,20 @@ class ReferenceDataService:
             if value is not None
         }
 
+        logger.info(
+            "Searching routes: limit=%s offset=%s filters=%s",
+            query.limit,
+            query.offset,
+            sorted(key for key in params if key not in {"limit", "offset"}),
+        )
+
         payload = await self._client.get(
             "routes",
             params=params,
         )
 
         response = RouteResponse.model_validate(payload)
+        logger.debug("Route search complete: fetched=%s", len(response.data))
 
         return response.data
 
@@ -109,12 +128,20 @@ class ReferenceDataService:
             if value is not None
         }
 
+        logger.info(
+            "Searching taxes: limit=%s offset=%s search_provided=%s",
+            query.limit,
+            query.offset,
+            query.search is not None,
+        )
+
         payload = await self._client.get(
             "taxes",
             params=params,
         )
 
         response = TaxResponse.model_validate(payload)
+        logger.debug("Tax search complete: fetched=%s", len(response.data))
 
         return response.data
 

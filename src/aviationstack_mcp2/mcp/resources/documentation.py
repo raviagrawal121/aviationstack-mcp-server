@@ -1,8 +1,14 @@
+import logging
+
 from mcp.server.mcpserver import MCPServer
+
+logger = logging.getLogger(__name__)
 
 
 def register_documentation_resources(server: MCPServer) -> None:
     """Register MCP documentation resources."""
+
+    logger.debug("Registering Aviationstack documentation resources")
 
     @server.resource(
         "aviationstack://metadata/endpoints",
@@ -17,6 +23,7 @@ def register_documentation_resources(server: MCPServer) -> None:
     def aviationstack_endpoints() -> dict[str, object]:
         """Return public endpoint documentation."""
 
+        logger.debug("Reading documentation resource: aviationstack://metadata/endpoints")
         return {
             "flights": {
                 "endpoint": "/flights",
@@ -100,6 +107,7 @@ def register_documentation_resources(server: MCPServer) -> None:
     def tool_documentation() -> dict[str, object]:
         """Return public MCP tool documentation."""
 
+        logger.debug("Reading documentation resource: aviationstack://documentation/tools")
         return {
             "tools": [
                 {

@@ -1,8 +1,14 @@
+import logging
+
 from mcp.server.mcpserver import MCPServer
+
+logger = logging.getLogger(__name__)
 
 
 def register_metadata_resources(server: MCPServer) -> None:
     """Register server metadata resources."""
+
+    logger.debug("Registering Aviationstack server metadata resource")
 
     @server.resource(
         "aviationstack://metadata/server",
@@ -17,6 +23,7 @@ def register_metadata_resources(server: MCPServer) -> None:
     def server_metadata() -> dict[str, object]:
         """Return public server metadata."""
 
+        logger.debug("Reading metadata resource: aviationstack://metadata/server")
         return {
             "name": "aviationstack-mcp",
             "project": "aviationstack_mcp2",

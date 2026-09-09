@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from collections.abc import Mapping
 from typing import Any
 
@@ -21,6 +22,8 @@ from aviationstack_mcp2.errors import (
     AviationstackServerError,
     AviationstackTimeoutError,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class HTTPClient:
@@ -76,21 +79,60 @@ class HTTPClient:
         try:
             async for attempt in retryer:
                 with attempt:
-                    response = await self._client.request(
-                        method=method,
-                        url=url,
-                        params=params,
-                        headers=headers,
+                    attempt_number = attempt.retry_state.attempt_number
+                    logger.debug(
+                        "Sending HTTP request: method=%s url=%s attempt=%s params=%s",
+                        method,
+                        url,
+                        attempt_number,
+                        sorted(params) if params else [],
                     )
+
+                    try:
+                        response = await self._client.request(
+                            method=method,
+                            url=url,
+                            params=params,
+                            headers=headers,
+                        )
+                    except retryable_exceptions as exc:
+                        logger.warning(
+                            "Retryable HTTP request failure: method=%s url=%s "
+                            "attempt=%s error=%s",
+                            method,
+                            url,
+                            attempt_number,
+                            exc,
+                        )
+                        raise
 
                     self._raise_for_status(response)
 
+                    logger.debug(
+                        "Received HTTP response: method=%s url=%s status=%s attempt=%s",
+                        method,
+                        url,
+                        response.status_code,
+                        attempt_number,
+                    )
                     return response
 
         except httpx.TimeoutException as exc:
+            logger.warning(
+                "HTTP request timed out: method=%s url=%s error=%s",
+                method,
+                url,
+                exc,
+            )
             raise AviationstackTimeoutError("Aviationstack request timed out.") from exc
 
         except httpx.RequestError as exc:
+            logger.warning(
+                "HTTP request failed: method=%s url=%s error=%s",
+                method,
+                url,
+                exc,
+            )
             raise AviationstackRequestError(f"Aviationstack request failed: {exc}") from exc
 
         raise AviationstackRequestError("Aviationstack request failed unexpectedly.")
@@ -98,6 +140,7 @@ class HTTPClient:
     async def close(self) -> None:
         """Close the underlying HTTP client."""
 
+        logger.debug("Closing HTTP client")
         await self._client.aclose()
 
     @staticmethod
@@ -105,6 +148,12 @@ class HTTPClient:
         response: httpx.Response,
     ) -> None:
         status_code = response.status_code
+
+        if status_code >= 400:
+            logger.warning(
+                "Aviationstack HTTP error response: status=%s",
+                status_code,
+            )
 
         if status_code == 401:
             raise AviationstackAuthenticationError(
