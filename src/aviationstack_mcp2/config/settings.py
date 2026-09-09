@@ -1,9 +1,20 @@
+from __future__ import annotations
+
 import logging
 from enum import StrEnum
 from functools import lru_cache
 
-from pydantic import AnyHttpUrl, Field, SecretStr, TypeAdapter, field_validator
+from pydantic import (
+    AnyHttpUrl,
+    Field,
+    SecretStr,
+    TypeAdapter,
+    field_validator,
+    model_validator,
+)
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from aviationstack_mcp2.security import validate_api_base_url
 
 _http_url_adapter = TypeAdapter(AnyHttpUrl)
 
@@ -122,6 +133,16 @@ class Settings(BaseSettings):
         _http_url_adapter.validate_python(value)
 
         return value
+
+    @model_validator(mode="after")
+    def validate_environment_security(self) -> Settings:
+        """Apply stricter API URL policy to production configuration."""
+
+        validate_api_base_url(
+            self.aviationstack_base_url,
+            environment=self.environment.value,
+        )
+        return self
 
 
 @lru_cache

@@ -9,6 +9,7 @@ from aviationstack_mcp2.config import Settings
 from aviationstack_mcp2.errors import (
     AviationstackAPIError,
 )
+from aviationstack_mcp2.security import validate_endpoint
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +36,7 @@ class AviationstackClient:
         url = self._build_url(endpoint)
 
         request_params = {
-            "access_key": self._settings.aviationstack_api_key,
+            "access_key": self._settings.aviationstack_api_key.get_secret_value(),
         }
 
         if params:
@@ -76,6 +77,7 @@ class AviationstackClient:
     def _build_url(self, endpoint: str) -> str:
         """Build an endpoint URL safely."""
 
+        validate_endpoint(endpoint)
         normalized_base_url = self._settings.aviationstack_base_url.rstrip("/")
         normalized_endpoint = endpoint.strip("/")
 
@@ -127,10 +129,9 @@ class AviationstackClient:
             message = "Aviationstack returned an API error."
 
         logger.warning(
-            "Aviationstack API error: type=%s code=%s message=%s",
+            "Aviationstack API error: type=%s code=%s",
             error_type,
             error_code,
-            message,
         )
 
         raise AviationstackAPIError(

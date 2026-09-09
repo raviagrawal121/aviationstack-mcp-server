@@ -2,6 +2,7 @@ import pytest
 from pydantic import ValidationError
 
 from aviationstack_mcp2.config.settings import Environment, Settings
+from aviationstack_mcp2.errors import AviationstackConfigurationError
 
 # ---------------------------------------------------------------------------
 # Basic configuration
@@ -131,6 +132,15 @@ def test_invalid_base_url_rejected(base_url: str) -> None:
         Settings(
             aviationstack_api_key="test-key",
             aviationstack_base_url=base_url,
+        )
+
+
+def test_production_base_url_requires_secure_aviationstack_host() -> None:
+    with pytest.raises(AviationstackConfigurationError):
+        Settings(
+            aviationstack_api_key="test-key",
+            environment=Environment.PRODUCTION,
+            aviationstack_base_url="http://api.aviationstack.com/v1",
         )
 
 
