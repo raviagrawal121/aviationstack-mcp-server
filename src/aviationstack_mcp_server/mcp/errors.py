@@ -4,7 +4,7 @@ import logging
 from collections.abc import Awaitable, Callable
 from functools import wraps
 from time import perf_counter
-from typing import Any, TypeVar
+from typing import Any
 
 from mcp.types import CallToolResult, TextContent
 
@@ -26,7 +26,6 @@ from aviationstack_mcp_server.observability import (
 )
 
 logger = logging.getLogger(__name__)
-T = TypeVar("T")
 
 
 def translate_aviationstack_error(error: AviationstackError) -> str:
@@ -68,7 +67,7 @@ def mcp_error_message(error: AviationstackError) -> str:
     return translate_aviationstack_error(error)
 
 
-def mcp_error_boundary(
+def mcp_error_boundary[T](
     func: Callable[..., Awaitable[T]],
 ) -> Callable[..., Awaitable[T | CallToolResult]]:
     """Convert tool failures into safe MCP-facing errors."""
