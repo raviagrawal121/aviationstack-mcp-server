@@ -2,7 +2,7 @@ import pytest
 from mcp import Client
 
 from aviationstack_mcp_server.mcp.server import create_server
-from tests.integration.mcp.fakes import FakeAviationstackClient
+from tests.integration.mcp.fakes import FakeAviationstackClient, create_test_server
 
 
 @pytest.mark.asyncio
@@ -10,7 +10,7 @@ async def test_mcp_client_initializes() -> None:
     """Verify that the MCP client can initialize against the server."""
 
     # Arrange
-    server = create_server()
+    server = create_test_server()
 
     # Act
     async with Client(
@@ -26,7 +26,7 @@ async def test_tools_list() -> None:
     """Verify that the MCP server exposes the expected tools."""
 
     # Arrange
-    server = create_server()
+    server = create_test_server()
 
     # Act
     async with Client(
@@ -151,7 +151,7 @@ async def test_tools_list() -> None:
 async def test_search_airports_schema() -> None:
 
     # Arrange
-    server = create_server()
+    server = create_test_server()
 
     # Act
     async with Client(
@@ -170,7 +170,7 @@ async def test_search_airports_schema() -> None:
 @pytest.mark.asyncio
 async def test_search_flights_schema() -> None:
     # Arrange
-    server = create_server()
+    server = create_test_server()
 
     # Act
     async with Client(
@@ -189,7 +189,7 @@ async def test_search_flights_schema() -> None:
 @pytest.mark.asyncio
 async def test_context_is_not_exposed_in_tool_schema() -> None:
     # Arrange
-    server = create_server()
+    server = create_test_server()
 
     # Act
     async with Client(
@@ -245,7 +245,7 @@ async def test_search_airports_end_to_end() -> None:
 @pytest.mark.asyncio
 async def test_search_airports_rejects_invalid_limit() -> None:
     # Arrange
-    server = create_server()
+    server = create_test_server()
 
     # Act
     async with Client(
@@ -268,7 +268,7 @@ async def test_search_airports_rejects_invalid_limit() -> None:
 @pytest.mark.asyncio
 async def test_unknown_tool_fails() -> None:
     # Arrange
-    server = create_server()
+    server = create_test_server()
 
     # Act
     async with Client(
@@ -286,7 +286,7 @@ async def test_unknown_tool_fails() -> None:
 @pytest.mark.asyncio
 async def test_prompts_list() -> None:
     # Arrange
-    server = create_server()
+    server = create_test_server()
 
     # Act
     async with Client(
@@ -309,7 +309,7 @@ async def test_prompts_list() -> None:
 @pytest.mark.asyncio
 async def test_plan_flight_search_prompt() -> None:
     # Arrange
-    server = create_server()
+    server = create_test_server()
 
     # Act
     async with Client(
@@ -335,7 +335,7 @@ async def test_plan_flight_search_prompt() -> None:
 @pytest.mark.asyncio
 async def test_resources_list() -> None:
     # Arrange
-    server = create_server()
+    server = create_test_server()
 
     # Act
     async with Client(
@@ -358,7 +358,7 @@ async def test_resources_list() -> None:
 @pytest.mark.asyncio
 async def test_server_metadata_resource() -> None:
     # Arrange
-    server = create_server()
+    server = create_test_server()
 
     # Act
     async with Client(
@@ -375,7 +375,7 @@ async def test_server_metadata_resource() -> None:
 @pytest.mark.asyncio
 async def test_tool_documentation_resource() -> None:
     # Arrange
-    server = create_server()
+    server = create_test_server()
 
     # Act
     async with Client(
@@ -392,7 +392,7 @@ async def test_tool_documentation_resource() -> None:
 @pytest.mark.asyncio
 async def test_complete_mcp_surface() -> None:
     # Arrange
-    server = create_server()
+    server = create_test_server()
 
     # Act
     async with Client(

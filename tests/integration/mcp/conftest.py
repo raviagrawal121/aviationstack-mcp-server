@@ -4,13 +4,13 @@ from contextlib import asynccontextmanager
 import pytest_asyncio
 from mcp import Client
 
-from aviationstack_mcp_server.mcp.server import create_server
+from tests.integration.mcp.fakes import create_test_server
 
 
 @asynccontextmanager
 async def connected_mcp_client() -> AsyncIterator[Client]:
     """Create an MCP server and connect an in-memory MCP client."""
-    server = create_server()
+    server = create_test_server()
 
     async with Client(
         server,

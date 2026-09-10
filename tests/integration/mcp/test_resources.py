@@ -1,11 +1,11 @@
 import pytest
 
-from aviationstack_mcp_server.mcp.server import create_server
+from tests.integration.mcp.fakes import create_test_server
 
 
 @pytest.mark.asyncio
 async def test_resources_are_registered() -> None:
-    server = create_server()
+    server = create_test_server()
 
     resources = await server.list_resources()
 
@@ -22,7 +22,7 @@ async def test_resources_are_registered() -> None:
 
 @pytest.mark.asyncio
 async def test_server_metadata_resource() -> None:
-    server = create_server()
+    server = create_test_server()
 
     contents = await server.read_resource(
         "aviationstack://metadata/server",
@@ -33,7 +33,7 @@ async def test_server_metadata_resource() -> None:
 
 @pytest.mark.asyncio
 async def test_server_metadata_contains_project_name() -> None:
-    server = create_server()
+    server = create_test_server()
 
     contents = await server.read_resource(
         "aviationstack://metadata/server",
@@ -49,7 +49,7 @@ async def test_server_metadata_contains_project_name() -> None:
 
 @pytest.mark.asyncio
 async def test_endpoint_documentation_resource() -> None:
-    server = create_server()
+    server = create_test_server()
 
     contents = await server.read_resource(
         "aviationstack://metadata/endpoints",
@@ -65,7 +65,7 @@ async def test_endpoint_documentation_resource() -> None:
 
 @pytest.mark.asyncio
 async def test_tool_documentation_resource() -> None:
-    server = create_server()
+    server = create_test_server()
 
     contents = await server.read_resource(
         "aviationstack://documentation/tools",

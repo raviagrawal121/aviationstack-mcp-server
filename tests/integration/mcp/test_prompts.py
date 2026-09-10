@@ -1,11 +1,11 @@
 import pytest
 
-from aviationstack_mcp_server.mcp.server import create_server
+from tests.integration.mcp.fakes import create_test_server
 
 
 @pytest.mark.asyncio
 async def test_aviation_prompts_are_registered() -> None:
-    server = create_server()
+    server = create_test_server()
 
     prompts = await server.list_prompts()
 
@@ -22,7 +22,7 @@ async def test_aviation_prompts_are_registered() -> None:
 
 @pytest.mark.asyncio
 async def test_flight_search_prompt_arguments() -> None:
-    server = create_server()
+    server = create_test_server()
 
     prompts = await server.list_prompts()
 
@@ -35,7 +35,7 @@ async def test_flight_search_prompt_arguments() -> None:
 
 @pytest.mark.asyncio
 async def test_schedule_prompt_arguments() -> None:
-    server = create_server()
+    server = create_test_server()
 
     prompts = await server.list_prompts()
 
@@ -49,7 +49,7 @@ async def test_schedule_prompt_arguments() -> None:
 
 @pytest.mark.asyncio
 async def test_flight_search_prompt_content() -> None:
-    server = create_server()
+    server = create_test_server()
 
     result = await server.get_prompt(
         "plan_flight_search",

@@ -1,11 +1,11 @@
 import pytest
 
-from aviationstack_mcp_server.mcp.server import create_server
+from tests.integration.mcp.fakes import create_test_server
 
 
 @pytest.mark.asyncio
 async def test_reference_tools_are_registered() -> None:
-    server = create_server()
+    server = create_test_server()
 
     tools = await server.list_tools()
 
@@ -23,7 +23,7 @@ async def test_reference_tools_are_registered() -> None:
 
 @pytest.mark.asyncio
 async def test_reference_tools_do_not_expose_context() -> None:
-    server = create_server()
+    server = create_test_server()
 
     tools = await server.list_tools()
 
@@ -47,7 +47,7 @@ async def test_reference_tools_do_not_expose_context() -> None:
 
 @pytest.mark.asyncio
 async def test_reference_list_tools_expose_query() -> None:
-    server = create_server()
+    server = create_test_server()
 
     tools = await server.list_tools()
 
@@ -67,7 +67,7 @@ async def test_reference_list_tools_expose_query() -> None:
 
 @pytest.mark.asyncio
 async def test_reference_search_tools_expose_query() -> None:
-    server = create_server()
+    server = create_test_server()
 
     tools = await server.list_tools()
 

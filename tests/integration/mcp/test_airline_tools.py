@@ -1,11 +1,11 @@
 import pytest
 
-from aviationstack_mcp_server.mcp.server import create_server
+from tests.integration.mcp.fakes import create_test_server
 
 
 @pytest.mark.asyncio
 async def test_airline_tools_are_registered() -> None:
-    server = create_server()
+    server = create_test_server()
 
     tools = await server.list_tools()
 
@@ -16,7 +16,7 @@ async def test_airline_tools_are_registered() -> None:
 
 @pytest.mark.asyncio
 async def test_search_airlines_schema() -> None:
-    server = create_server()
+    server = create_test_server()
 
     tools = await server.list_tools()
 
@@ -33,7 +33,7 @@ async def test_search_airlines_schema() -> None:
 
 @pytest.mark.asyncio
 async def test_search_airlines_exposes_query_fields() -> None:
-    server = create_server()
+    server = create_test_server()
 
     tools = await server.list_tools()
 

@@ -1,5 +1,7 @@
 from typing import Any
 
+from aviationstack_mcp_server.mcp.server import create_server
+
 
 class FakeAviationstackClient:
     """Fake API client for MCP integration tests."""
@@ -29,3 +31,9 @@ class FakeAviationstackClient:
 
     async def close(self) -> None:
         self.closed = True
+
+
+def create_test_server():
+    """Create an MCP server backed by the in-memory Aviationstack client."""
+
+    return create_server(client_factory=FakeAviationstackClient)

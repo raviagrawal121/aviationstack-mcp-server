@@ -1,11 +1,11 @@
 import pytest
 
-from aviationstack_mcp_server.mcp.server import create_server
+from tests.integration.mcp.fakes import create_test_server
 
 
 @pytest.mark.asyncio
 async def test_registered_tools() -> None:
-    server = create_server()
+    server = create_test_server()
 
     tools = await server.list_tools()
 
