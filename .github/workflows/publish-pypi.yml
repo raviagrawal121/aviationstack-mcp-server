@@ -32,7 +32,8 @@ jobs:
         run: uv sync --locked
 
       - name: Verify package metadata
-        env: RELEASE_TAG: ${{ inputs.tag }}
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
         shell: bash
         run: |
           python - <<'PY'
