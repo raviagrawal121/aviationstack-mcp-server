@@ -32,9 +32,11 @@ jobs:
         run: uv sync --locked
 
       - name: Verify package metadata
+        env: RELEASE_TAG: ${{ inputs.tag }}
         shell: bash
         run: |
           python - <<'PY'
+          import os
           import tomllib
           from pathlib import Path
 
@@ -45,7 +47,7 @@ jobs:
           project = data["project"]
 
           expected_name = "aviationstack-mcp-server"
-          expected_version = "0.1.0"
+          expected_version = os.environ["RELEASE_TAG"].removeprefix("v")
 
           assert project["name"] == expected_name, (
               f"Unexpected package name: {project['name']}"
