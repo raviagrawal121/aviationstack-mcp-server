@@ -1,0 +1,101 @@
+name: Publish to PyPI
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Git tag to publish"
+        required: true
+        default: "v0.1.0"
+        type: string
+
+jobs:
+  build:
+    name: Build release distributions
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout release tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.13
+
+      - name: Install dependencies
+        run: uv sync --locked
+
+      - name: Verify package metadata
+        shell: bash
+        run: |
+          python - <<'PY'
+          import tomllib
+          from pathlib import Path
+
+          data = tomllib.loads(
+              Path("pyproject.toml").read_text(encoding="utf-8")
+          )
+
+          project = data["project"]
+
+          expected_name = "aviationstack-mcp-server"
+          expected_version = "0.1.0"
+
+          assert project["name"] == expected_name, (
+              f"Unexpected package name: {project['name']}"
+          )
+
+          assert project["version"] == expected_version, (
+              f"Unexpected version: {project['version']}"
+          )
+
+          print(f"Package: {project['name']}")
+          print(f"Version: {project['version']}")
+          PY
+
+      - name: Run Ruff
+        run: uv run ruff check .
+
+      - name: Run MyPy
+        run: uv run mypy src
+
+      - name: Run tests
+        run: uv run pytest -m "not live_api"
+
+      - name: Build distributions
+        run: uv build --no-sources
+
+      - name: Upload distributions
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+
+  publish:
+    name: Publish to PyPI
+    needs:
+      - build
+    runs-on: ubuntu-latest
+
+    environment:
+      name: pypi
+      url: https://pypi.org/p/aviationstack-mcp-server
+
+    permissions:
+      id-token: write
+
+    steps:
+      - name: Download distributions
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+
+      - name: Publish distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
